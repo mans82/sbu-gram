@@ -1,7 +1,5 @@
-package com.mans.sbugram.tests.server.events;
+package com.mans.sbugram.server.events;
 
-import com.mans.sbugram.server.events.EventHandler;
-import com.mans.sbugram.server.events.EventManager;
 import com.mans.sbugram.server.exceptions.HandlerAlreadyExistsException;
 import com.mans.sbugram.server.exceptions.UnhandledRequestTypeException;
 import com.mans.sbugram.server.requests.Request;
