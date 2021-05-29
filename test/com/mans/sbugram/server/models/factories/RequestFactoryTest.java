@@ -14,6 +14,16 @@ import static org.junit.Assert.*;
 public class RequestFactoryTest {
 
     @Test
+    public void testGetRequestNoRequestType() {
+        JSONObject object = new JSONObject();
+
+        object.put("dummy_field", "dummy_value");
+        object.put("data", new JSONObject());
+
+        assertFalse(RequestFactory.getRequest(object).isPresent());
+    }
+
+    @Test
     public void testGetRequestInvalidType() {
         JSONObject object = new JSONObject("{\"request_type\":\"invalid\",\"data\":{}}");
 
@@ -22,6 +32,13 @@ public class RequestFactoryTest {
 
     @Test
     public void testGetRequestInvalidData() {
+        JSONObject object = new JSONObject("{\"request_type\":\"LOGIN\",\"data\":{\"username\": \"user\"}}");
+
+        assertFalse(RequestFactory.getRequest(object).isPresent());
+    }
+
+    @Test
+    public void testGetRequestNoData() {
         JSONObject object = new JSONObject();
 
         object.put("request_type", RequestType.LOGIN.name());

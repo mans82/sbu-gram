@@ -2,6 +2,8 @@ package com.mans.sbugram.server.models.requests;
 
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class LoginRequest extends Request{
 
     public final String username;
@@ -15,6 +17,19 @@ public class LoginRequest extends Request{
     @Override
     public RequestType getRequestType() {
         return RequestType.LOGIN;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LoginRequest request = (LoginRequest) o;
+        return username.equals(request.username) && password.equals(request.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, password);
     }
 
     @Override
