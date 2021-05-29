@@ -1,6 +1,8 @@
 package com.mans.sbugram.server.models.responses;
 
-public abstract class Response {
+import com.mans.sbugram.server.models.interfaces.JSONRepresentable;
+
+public abstract class Response implements JSONRepresentable {
 
     public abstract ResponseType getResponseType();
 

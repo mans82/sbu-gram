@@ -1,5 +1,7 @@
 package com.mans.sbugram.server.models.responses;
 
+import org.json.JSONObject;
+
 public class LoginResponse extends Response {
 
     public final boolean successful;
@@ -15,4 +17,13 @@ public class LoginResponse extends Response {
         return ResponseType.LOGIN;
     }
 
+    @Override
+    public JSONObject toJSON() {
+        JSONObject result = new JSONObject();
+
+        result.put("successful", this.successful);
+        result.put("message", this.message);
+
+        return result;
+    }
 }

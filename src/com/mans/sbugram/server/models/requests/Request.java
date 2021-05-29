@@ -1,6 +1,8 @@
 package com.mans.sbugram.server.models.requests;
 
-public abstract class Request {
+import com.mans.sbugram.server.models.interfaces.JSONRepresentable;
+
+public abstract class Request implements JSONRepresentable {
 
     public abstract RequestType getRequestType();
 

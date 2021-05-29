@@ -8,6 +8,7 @@ import com.mans.sbugram.server.models.requests.LoginRequest;
 import com.mans.sbugram.server.models.requests.Request;
 import com.mans.sbugram.server.models.requests.RequestType;
 import com.mans.sbugram.server.models.responses.LoginResponse;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -75,6 +76,11 @@ public class LoginEventHandlerTest {
         assertThrows(RequestTypeMismatchException.class, () -> handler.handleEvent(new Request() {
             @Override
             public RequestType getRequestType() {
+                return null;
+            }
+
+            @Override
+            public JSONObject toJSON() {
                 return null;
             }
         }));

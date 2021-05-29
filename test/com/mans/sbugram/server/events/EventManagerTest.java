@@ -5,6 +5,7 @@ import com.mans.sbugram.server.exceptions.UnhandledRequestTypeException;
 import com.mans.sbugram.server.models.requests.Request;
 import com.mans.sbugram.server.models.requests.RequestType;
 import com.mans.sbugram.server.models.responses.Response;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
@@ -52,11 +53,21 @@ public class EventManagerTest {
         public RequestType getRequestType() {
             return RequestType.LOGIN;
         }
+
+        @Override
+        public JSONObject toJSON() {
+            return null;
+        }
     };
     private final Request sampleSignUpRequest = new Request() {
         @Override
         public RequestType getRequestType() {
             return RequestType.SIGNUP;
+        }
+
+        @Override
+        public JSONObject toJSON() {
+            return null;
         }
     };
 

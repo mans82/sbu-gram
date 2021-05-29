@@ -1,5 +1,7 @@
 package com.mans.sbugram.server.models.requests;
 
+import org.json.JSONObject;
+
 public class LoginRequest extends Request{
 
     public final String username;
@@ -15,4 +17,17 @@ public class LoginRequest extends Request{
         return RequestType.LOGIN;
     }
 
+    @Override
+    public JSONObject toJSON() {
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+
+        data.put("username", this.username);
+        data.put("password", this.password);
+
+        result.put("request_type", this.getRequestType().name());
+        result.put("data", data);
+
+        return result;
+    }
 }
