@@ -1,4 +1,4 @@
-package com.mans.sbugram.server.requests;
+package com.mans.sbugram.server.models.requests;
 
 public class LoginRequest extends Request{
 

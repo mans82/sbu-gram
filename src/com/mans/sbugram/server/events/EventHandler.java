@@ -1,9 +1,9 @@
 package com.mans.sbugram.server.events;
 
 import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
-import com.mans.sbugram.server.requests.Request;
-import com.mans.sbugram.server.requests.RequestType;
-import com.mans.sbugram.server.responses.Response;
+import com.mans.sbugram.server.models.requests.Request;
+import com.mans.sbugram.server.models.requests.RequestType;
+import com.mans.sbugram.server.models.responses.Response;
 
 public interface EventHandler {
 

@@ -1,4 +1,4 @@
-package com.mans.sbugram.server.responses;
+package com.mans.sbugram.server.models.responses;
 
 public class LoginResponse extends Response {
 

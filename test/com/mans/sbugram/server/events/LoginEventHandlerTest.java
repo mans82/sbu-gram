@@ -4,10 +4,10 @@ import com.mans.sbugram.server.dao.impl.UserDao;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
 import com.mans.sbugram.server.models.User;
-import com.mans.sbugram.server.requests.LoginRequest;
-import com.mans.sbugram.server.requests.Request;
-import com.mans.sbugram.server.requests.RequestType;
-import com.mans.sbugram.server.responses.LoginResponse;
+import com.mans.sbugram.server.models.requests.LoginRequest;
+import com.mans.sbugram.server.models.requests.Request;
+import com.mans.sbugram.server.models.requests.RequestType;
+import com.mans.sbugram.server.models.responses.LoginResponse;
 import org.junit.Before;
 import org.junit.Test;
 
