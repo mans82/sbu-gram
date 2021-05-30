@@ -36,6 +36,7 @@ public class LoginResponse extends Response {
     public JSONObject toJSON() {
         JSONObject result = new JSONObject();
 
+        result.put("response_type", this.getResponseType().name());
         result.put("successful", this.successful);
         result.put("message", this.message);
 
