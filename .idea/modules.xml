@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/sbu-gram.iml" filepath="$PROJECT_DIR$/sbu-gram.iml" />
+      <module fileurl="file://$PROJECT_DIR$/models/sbu-gram.models.iml" filepath="$PROJECT_DIR$/models/sbu-gram.models.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server/sbu-gram.server.iml" filepath="$PROJECT_DIR$/server/sbu-gram.server.iml" />
     </modules>
   </component>
 </project>

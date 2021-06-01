@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ResponseFactoryTest" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
-    <module name="sbu-gram" />
+    <module name="sbu-gram.models" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.mans.sbugram.server.models.factories.ResponseFactory" />
+        <option name="PATTERN" value="models.factories.ResponseFactory" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="PACKAGE_NAME" value="com.mans.sbugram.server.models.factories" />
-    <option name="MAIN_CLASS_NAME" value="com.mans.sbugram.server.models.factories.ResponseFactoryTest" />
+    <option name="PACKAGE_NAME" value="com.mans.sbugram.models.factories" />
+    <option name="MAIN_CLASS_NAME" value="com.mans.sbugram.models.factories.ResponseFactoryTest" />
     <option name="METHOD_NAME" value="" />
     <option name="TEST_OBJECT" value="class" />
     <method v="2">
