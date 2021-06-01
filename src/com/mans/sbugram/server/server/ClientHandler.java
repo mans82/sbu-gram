@@ -19,7 +19,7 @@ class ClientHandler implements Runnable {
     private final OutputStream socketOutputStream;
     private final EventManager eventManager;
 
-    ClientHandler(InputStream socketInputStream, OutputStream socketOutputStream, EventManager eventManager) throws IOException {
+    ClientHandler(InputStream socketInputStream, OutputStream socketOutputStream, EventManager eventManager) {
         this.socketInputStream  = socketInputStream;
         this.socketOutputStream = socketOutputStream;
         this.eventManager = eventManager;

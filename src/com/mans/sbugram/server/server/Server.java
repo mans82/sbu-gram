@@ -24,13 +24,6 @@ public class Server extends Thread {
     }
 
     @Override
-    public synchronized void start() {
-        if (this.isRunning) {
-            super.start();
-        }
-    }
-
-    @Override
     public void run() {
         while (this.isRunning) {
             Socket incomingConnection;
