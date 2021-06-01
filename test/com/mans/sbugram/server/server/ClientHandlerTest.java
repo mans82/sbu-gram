@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 public class ClientHandlerTest {
 
-    private final User testUser = new User("jafar", "Jafar", "1234");
+    private final User testUser = new User("jafar", "Jafar", "1234", "jafarabad", "Singer");
     private final UserDao mockDao = mock(UserDao.class);
 
     @Before

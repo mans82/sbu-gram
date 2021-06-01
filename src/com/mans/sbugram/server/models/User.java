@@ -11,11 +11,15 @@ public class User implements JSONRepresentable {
     public final String username;
     public final String name;
     public final String password;
+    public final String city;
+    public final String bio;
 
-    public User(@NotNull String username, @NotNull String name, @NotNull String password) {
+    public User(@NotNull String username, @NotNull String name, @NotNull String password, @NotNull String city, @NotNull String bio) {
         this.username = username;
         this.name = name;
         this.password = password;
+        this.city = city;
+        this.bio = bio;
     }
 
     @Override
@@ -38,6 +42,8 @@ public class User implements JSONRepresentable {
         result.put("username", username);
         result.put("name", name);
         result.put("password", password);
+        result.put("city", city);
+        result.put("bio", bio);
 
         return result;
     }

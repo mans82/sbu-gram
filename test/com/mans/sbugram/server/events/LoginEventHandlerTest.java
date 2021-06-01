@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 public class LoginEventHandlerTest {
 
     UserDao mockedDao;
-    User testUser = new User("jafar", "Jafar Jafari", "1234");
+    User testUser = new User("jafar", "Jafar Jafari", "1234", "jafarabad", "Singer");
     LoginEventHandler handler;
 
     @Before
