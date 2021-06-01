@@ -3,6 +3,7 @@ package com.mans.sbugram.server.models.factories;
 import com.mans.sbugram.server.models.responses.LoginResponse;
 import com.mans.sbugram.server.models.responses.Response;
 import com.mans.sbugram.server.models.responses.ResponseType;
+import com.mans.sbugram.server.models.responses.SignUpResponse;
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -11,15 +12,6 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class ResponseFactoryTest {
-
-    @Test
-    public void testGetResponseLoginResponse() {
-        LoginResponse testLoginResponse = new LoginResponse(true, "Logged in");
-        Optional<Response> parsedResponse = ResponseFactory.getResponse(testLoginResponse.toJSON());
-
-        assertTrue(parsedResponse.isPresent());
-        assertEquals(testLoginResponse, parsedResponse.get());
-    }
 
     @Test
     public void testGetResponseNoResponseType() {
@@ -53,6 +45,24 @@ public class ResponseFactoryTest {
 
         assertTrue(parsedResponse.isPresent());
         assertEquals(testLoginResponse, parsedResponse.get());
+    }
+
+    @Test
+    public void testGetResponseLoginResponse() {
+        LoginResponse testLoginResponse = new LoginResponse(true, "Logged in");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(testLoginResponse.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(testLoginResponse, parsedResponse.get());
+    }
+
+    @Test
+    public void testGetResponseSignUpResponse() {
+        SignUpResponse testSignUpResponse = new SignUpResponse(true, "");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(testSignUpResponse.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(testSignUpResponse, parsedResponse.get());
     }
 
 }

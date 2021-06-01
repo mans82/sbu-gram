@@ -1,8 +1,10 @@
 package com.mans.sbugram.server.models.factories;
 
+import com.mans.sbugram.server.models.User;
 import com.mans.sbugram.server.models.requests.LoginRequest;
 import com.mans.sbugram.server.models.requests.Request;
 import com.mans.sbugram.server.models.requests.RequestType;
+import com.mans.sbugram.server.models.requests.SignUpRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,7 +37,7 @@ public class RequestFactory {
 
         switch (type) {
             case SIGNUP:
-                break; // TODO Implement
+                return Optional.ofNullable(newSignUpRequest(data));
             case LOGIN:
                 return Optional.ofNullable(newLoginRequest(data));
         }
@@ -50,6 +52,24 @@ public class RequestFactory {
             password = object.getString("password");
 
             return new LoginRequest(username, password);
+        } catch (JSONException e) {
+            return null;
+        }
+    }
+
+    private static SignUpRequest newSignUpRequest(JSONObject object) {
+        String name, username, password, city, bio;
+
+        try {
+            name = object.getString("name");
+            username = object.getString("username");
+            password = object.getString("password");
+            city = object.getString("city");
+            bio = object.getString("bio");
+
+            return new SignUpRequest(
+                    new User(username, name, password, city, bio)
+            );
         } catch (JSONException e) {
             return null;
         }

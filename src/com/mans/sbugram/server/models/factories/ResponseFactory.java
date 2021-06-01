@@ -3,6 +3,7 @@ package com.mans.sbugram.server.models.factories;
 import com.mans.sbugram.server.models.responses.LoginResponse;
 import com.mans.sbugram.server.models.responses.Response;
 import com.mans.sbugram.server.models.responses.ResponseType;
+import com.mans.sbugram.server.models.responses.SignUpResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,7 +32,7 @@ public class ResponseFactory {
             case LOGIN:
                 return Optional.of(newLoginResponse(successful, message));
             case SIGNUP:
-                break; // TODO Implement
+                return Optional.of(newSignUpResponse(successful, message));
         }
 
         return Optional.empty();
@@ -40,6 +41,10 @@ public class ResponseFactory {
 
     private static LoginResponse newLoginResponse(boolean successful, String message) {
         return new LoginResponse(successful, message);
+    }
+
+    private static SignUpResponse newSignUpResponse(boolean successful, String message) {
+        return new SignUpResponse(successful, message);
     }
 
 }

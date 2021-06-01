@@ -1,8 +1,10 @@
 package com.mans.sbugram.server.models.factories;
 
+import com.mans.sbugram.server.models.User;
 import com.mans.sbugram.server.models.requests.LoginRequest;
 import com.mans.sbugram.server.models.requests.Request;
 import com.mans.sbugram.server.models.requests.RequestType;
+import com.mans.sbugram.server.models.requests.SignUpRequest;
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -31,13 +33,6 @@ public class RequestFactoryTest {
     }
 
     @Test
-    public void testGetRequestInvalidData() {
-        JSONObject object = new JSONObject("{\"request_type\":\"LOGIN\",\"data\":{\"username\": \"user\"}}");
-
-        assertFalse(RequestFactory.getRequest(object).isPresent());
-    }
-
-    @Test
     public void testGetRequestNoData() {
         JSONObject object = new JSONObject();
 
@@ -54,5 +49,27 @@ public class RequestFactoryTest {
 
         assertTrue(parsedRequest.isPresent());
         assertEquals(request, parsedRequest.get());
+    }
+
+    @Test
+    public void testGetRequestLoginRequestInvalidData() {
+        JSONObject object = new JSONObject("{\"request_type\":\"LOGIN\",\"data\":{\"username\": \"user\"}}");
+
+        assertFalse(RequestFactory.getRequest(object).isPresent());
+    }
+
+    @Test
+    public void testGetRequestSignUpRequest() {
+        SignUpRequest request = new SignUpRequest(
+                new User("jafar", "Jafar", "1234", "jafarabad", "Singer")
+        );
+
+        Optional<Request> parsedRequest = RequestFactory.getRequest(request.toJSON());
+
+        assertTrue(parsedRequest.isPresent());
+        assertEquals(
+                request,
+                parsedRequest.get()
+        );
     }
 }
