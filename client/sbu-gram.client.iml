@@ -7,5 +7,7 @@
     </content>
     <orderEntry type="jdk" jdkName="11" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="sbu-gram.models" />
+    <orderEntry type="library" name="javafx-swt" level="project" />
   </component>
 </module>
