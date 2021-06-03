@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Main (server)" type="Application" factoryName="Application" singleton="false">
+    <option name="MAIN_CLASS_NAME" value="com.mans.sbugram.server.Main" />
+    <module name="sbu-gram.server" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.mans.sbugram.server.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
