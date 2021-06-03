@@ -28,9 +28,6 @@ class ClientHandler implements Runnable {
     @Override
     public void run() {
         JSONObject requestJsonObject = new JSONObject(new JSONTokener(socketInputStream));
-        try {
-            socketInputStream.close();
-        } catch (IOException ignored) {}
 
         Optional<Request> incomingRequest = RequestFactory.getRequest(requestJsonObject);
         if (!incomingRequest.isPresent()) {
@@ -53,7 +50,9 @@ class ClientHandler implements Runnable {
         try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.socketOutputStream)) {
             outputStreamWriter.write(generatedResponse.toJSON().toString());
             outputStreamWriter.flush();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+            System.out.println("hehe");
+        }
     }
 }
 
