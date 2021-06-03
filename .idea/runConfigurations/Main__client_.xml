@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
+  <configuration default="false" name="Main (client)" type="Application" factoryName="Application" singleton="false">
     <option name="MAIN_CLASS_NAME" value="com.mans.sbugram.client.Main" />
     <module name="sbu-gram.client" />
     <option name="VM_PARAMETERS" value="--module-path /usr/lib/jvm/java-11-openjfx/lib --add-modules javafx.controls,javafx.fxml" />

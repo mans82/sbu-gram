@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="sbu-gram.models" />
     <orderEntry type="library" name="javafx-swt" level="project" />
+    <orderEntry type="library" name="org.json:json:20210307" level="project" />
   </component>
 </module>

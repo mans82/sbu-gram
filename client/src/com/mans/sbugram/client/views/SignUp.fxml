@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<HBox fx:id="rootHBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mans.sbugram.client.controllers.SignUp">
+   <children>
+      <VBox fx:id="titleVBox" alignment="CENTER" prefHeight="400.0" prefWidth="250.0">
+         <children>
+            <Label fx:id="titleLabel" text="SBUgram">
+               <font>
+                  <Font size="28.0" />
+               </font>
+            </Label>
+            <Label fx:id="statusLabel" text="Sign Up To Access SBUgram." />
+         </children>
+      </VBox>
+      <VBox fx:id="inputVBox" alignment="CENTER" fillWidth="false" prefHeight="400.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: #e6e6e6;">
+         <children>
+            <TextField fx:id="usernameTextField" prefWidth="160.0" promptText="Username" />
+            <PasswordField fx:id="passwordPasswordField" prefWidth="160.0" promptText="Password" />
+            <TextField fx:id="nameTextField" layoutX="130.0" layoutY="141.0" prefWidth="160.0" promptText="Name" />
+            <TextField fx:id="cityTextField" layoutX="130.0" layoutY="197.0" prefWidth="160.0" promptText="City (optional)" />
+            <TextField fx:id="bioTextField" layoutX="130.0" layoutY="215.0" prefWidth="160.0" promptText="Bio (optional)" />
+            <Button fx:id="signUpButton" mnemonicParsing="false" onAction="#onSignUpButtonAction" text="Sign Up" />
+            <Button fx:id="switchLoginButton" mnemonicParsing="false" onAction="#onSwitchLoginButtonAction" text="Have an Account? Log In!" />
+         </children>
+      </VBox>
+   </children>
+</HBox>
