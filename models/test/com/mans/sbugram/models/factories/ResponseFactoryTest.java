@@ -1,9 +1,6 @@
 package com.mans.sbugram.models.factories;
 
-import com.mans.sbugram.models.responses.LoginResponse;
-import com.mans.sbugram.models.responses.Response;
-import com.mans.sbugram.models.responses.ResponseType;
-import com.mans.sbugram.models.responses.SignUpResponse;
+import com.mans.sbugram.models.responses.*;
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -63,6 +60,34 @@ public class ResponseFactoryTest {
 
         assertTrue(parsedResponse.isPresent());
         assertEquals(testSignUpResponse, parsedResponse.get());
+    }
+
+    @Test
+    public void testGetResponseFileUploadResponse() {
+        FileUploadResponse testFileUploadResponse = new FileUploadResponse(true, "Some message", "newFile");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(testFileUploadResponse.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(
+                testFileUploadResponse,
+                parsedResponse.get()
+        );
+    }
+
+    @Test
+    public void testGetResponseFileUploadResponseInvalidData() {
+        JSONObject invalidRequest = new JSONObject("{\"response_type\": \"FILE_UPLOAD\", \"successful\": true, \"message\": \"\", \"data\": {}}");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidRequest);
+
+        assertFalse(parsedResponse.isPresent());
+    }
+
+    @Test
+    public void testGetResponseFileUploadResponseNoData() {
+        JSONObject invalidRequest = new JSONObject("{\"response_type\": \"FILE_UPLOAD\", \"successful\": true, \"message\": \"\"}");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidRequest);
+
+        assertFalse(parsedResponse.isPresent());
     }
 
 }

@@ -1,17 +1,15 @@
 package com.mans.sbugram.models.factories;
 
 import com.mans.sbugram.models.User;
-import com.mans.sbugram.models.requests.LoginRequest;
-import com.mans.sbugram.models.requests.Request;
-import com.mans.sbugram.models.requests.RequestType;
-import com.mans.sbugram.models.requests.SignUpRequest;
+import com.mans.sbugram.models.requests.*;
 import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class RequestFactoryTest {
 
@@ -71,5 +69,27 @@ public class RequestFactoryTest {
                 request,
                 parsedRequest.get()
         );
+    }
+
+    @Test
+    public void testGetRequestFileUploadRequest() {
+        FileUploadRequest request = new FileUploadRequest(
+                "amFmYXI=" // Decrypts to "jafar"
+        );
+
+        Optional<Request> parsedRequest = RequestFactory.getRequest(request.toJSON());
+
+        assertTrue(parsedRequest.isPresent());
+        assertEquals(
+                request,
+                parsedRequest.get()
+        );
+    }
+
+    @Test
+    public void testGetRequestFileUploadRequestInvalidData() {
+        JSONObject invalidRequest = new JSONObject("{\"request_type\": \"FILE_UPLOAD\", \"data\": {}}");
+
+        assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
     }
 }

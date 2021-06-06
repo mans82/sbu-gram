@@ -1,10 +1,7 @@
 package com.mans.sbugram.models.factories;
 
 import com.mans.sbugram.models.User;
-import com.mans.sbugram.models.requests.LoginRequest;
-import com.mans.sbugram.models.requests.Request;
-import com.mans.sbugram.models.requests.RequestType;
-import com.mans.sbugram.models.requests.SignUpRequest;
+import com.mans.sbugram.models.requests.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +37,8 @@ public class RequestFactory {
                 return Optional.ofNullable(newSignUpRequest(data));
             case LOGIN:
                 return Optional.ofNullable(newLoginRequest(data));
+            case FILE_UPLOAD:
+                return Optional.ofNullable(newFileUploadRequest(data));
         }
 
         return Optional.empty();
@@ -73,6 +72,18 @@ public class RequestFactory {
         } catch (JSONException e) {
             return null;
         }
+    }
+
+    private static FileUploadRequest newFileUploadRequest(JSONObject object) {
+        String blob;
+
+        try {
+            blob = object.getString("blob");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new FileUploadRequest(blob);
     }
 
 }

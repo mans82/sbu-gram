@@ -1,9 +1,6 @@
 package com.mans.sbugram.models.factories;
 
-import com.mans.sbugram.models.responses.LoginResponse;
-import com.mans.sbugram.models.responses.Response;
-import com.mans.sbugram.models.responses.ResponseType;
-import com.mans.sbugram.models.responses.SignUpResponse;
+import com.mans.sbugram.models.responses.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,6 +12,7 @@ public class ResponseFactory {
         ResponseType responseType;
         boolean successful;
         String message;
+        JSONObject data;
         try {
             responseType = ResponseType.valueOf(object.getString("response_type"));
             successful = object.getBoolean("successful");
@@ -28,11 +26,19 @@ public class ResponseFactory {
             message = "";
         }
 
+        try {
+            data = object.getJSONObject("data");
+        } catch (JSONException e) {
+            data = null;
+        }
+
         switch (responseType) {
             case LOGIN:
                 return Optional.of(newLoginResponse(successful, message));
             case SIGNUP:
                 return Optional.of(newSignUpResponse(successful, message));
+            case FILE_UPLOAD:
+                return Optional.ofNullable(newFileUploadResponse(successful, message, data));
         }
 
         return Optional.empty();
@@ -45,6 +51,22 @@ public class ResponseFactory {
 
     private static SignUpResponse newSignUpResponse(boolean successful, String message) {
         return new SignUpResponse(successful, message);
+    }
+
+    private static FileUploadResponse newFileUploadResponse(boolean successful, String message, JSONObject data) {
+        if (data == null) {
+            return null;
+        }
+
+        String filename;
+
+        try {
+            filename = data.getString("filename");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new FileUploadResponse(successful, message, filename);
     }
 
 }

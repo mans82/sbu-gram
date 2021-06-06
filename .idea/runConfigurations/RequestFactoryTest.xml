@@ -3,7 +3,7 @@
     <module name="sbu-gram.models" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="models.factories.*" />
+        <option name="PATTERN" value="com.mans.sbugram.models.factories.RequestFactory" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
