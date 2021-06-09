@@ -3,32 +3,30 @@
     <module name="sbu-gram.server" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.mans.sbugram.server.exceptions.*" />
+        <option name="PATTERN" value="com.mans.sbugram.server.dao.Dao" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
-        <option name="PATTERN" value="models.interfaces.*" />
+        <option name="PATTERN" value="com.mans.sbugram.server.events.EventHandler" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="com.mans.sbugram.server.Main" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="com.mans.sbugram.server.dao.impl.*" />
         <option name="ENABLED" value="true" />
       </pattern>
       <pattern>
-        <option name="PATTERN" value="models.requests.Request" />
+        <option name="PATTERN" value="com.mans.sbugram.server.events.*" />
         <option name="ENABLED" value="true" />
       </pattern>
       <pattern>
-        <option name="PATTERN" value="models.responses.Response" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-      <pattern>
-        <option name="PATTERN" value="models.requests.RequestType" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-      <pattern>
-        <option name="PATTERN" value="models.responses.ResponseType" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-      <pattern>
-        <option name="PATTERN" value="com.mans.sbugram.*" />
+        <option name="PATTERN" value="com.mans.sbugram.server.server.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

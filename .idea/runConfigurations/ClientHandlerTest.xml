@@ -3,7 +3,7 @@
     <module name="sbu-gram.server" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.mans.sbugram.server.server.*" />
+        <option name="PATTERN" value="com.mans.sbugram.server.server.ClientHandler" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

@@ -3,7 +3,7 @@
     <module name="sbu-gram.server" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.mans.sbugram.server.events.*" />
+        <option name="PATTERN" value="com.mans.sbugram.server.events.LoginEventHandler" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
