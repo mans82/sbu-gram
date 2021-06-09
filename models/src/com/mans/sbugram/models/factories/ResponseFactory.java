@@ -39,6 +39,8 @@ public class ResponseFactory {
                 return Optional.of(newSignUpResponse(successful, message));
             case FILE_UPLOAD:
                 return Optional.ofNullable(newFileUploadResponse(successful, message, data));
+            case FILE_DOWNLOAD:
+                return Optional.ofNullable(newFileDownloadResponse(successful, message, data));
         }
 
         return Optional.empty();
@@ -67,6 +69,22 @@ public class ResponseFactory {
         }
 
         return new FileUploadResponse(successful, message, filename);
+    }
+
+    private static FileDownloadResponse newFileDownloadResponse(boolean successful, String message, JSONObject data) {
+        if (data == null) {
+            return null;
+        }
+
+        String blob;
+
+        try {
+            blob = data.getString("blob");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new FileDownloadResponse(successful, message, blob);
     }
 
 }

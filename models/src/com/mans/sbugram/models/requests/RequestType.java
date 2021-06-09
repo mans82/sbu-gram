@@ -3,5 +3,6 @@ package com.mans.sbugram.models.requests;
 public enum RequestType {
     SIGNUP,
     LOGIN,
-    FILE_UPLOAD
+    FILE_UPLOAD,
+    FILE_DOWNLOAD
 }

@@ -92,4 +92,24 @@ public class RequestFactoryTest {
 
         assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
     }
+
+    @Test
+    public void testGetRequestFileDownloadRequest() {
+        FileDownloadRequest request = new FileDownloadRequest("testName");
+
+        Optional<Request> parsedRequest = RequestFactory.getRequest(request.toJSON());
+
+        assertTrue(parsedRequest.isPresent());
+        assertEquals(
+                request,
+                parsedRequest.get()
+        );
+    }
+
+    @Test
+    public void testGetRequestFileDownloadRequestInvalidData() {
+        JSONObject invalidRequest = new JSONObject("{\"request_type\": \"FILE_DOWNLOAD\", \"data\": {}}");
+
+        assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
+    }
 }

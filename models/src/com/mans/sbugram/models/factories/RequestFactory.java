@@ -39,6 +39,8 @@ public class RequestFactory {
                 return Optional.ofNullable(newLoginRequest(data));
             case FILE_UPLOAD:
                 return Optional.ofNullable(newFileUploadRequest(data));
+            case FILE_DOWNLOAD:
+                return Optional.ofNullable(newFileDownloadRequest(data));
         }
 
         return Optional.empty();
@@ -84,6 +86,18 @@ public class RequestFactory {
         }
 
         return new FileUploadRequest(blob);
+    }
+
+    private static FileDownloadRequest newFileDownloadRequest(JSONObject object) {
+        String filename;
+
+        try {
+            filename = object.getString("filename");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new FileDownloadRequest(filename);
     }
 
 }

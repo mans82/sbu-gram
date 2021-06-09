@@ -90,4 +90,32 @@ public class ResponseFactoryTest {
         assertFalse(parsedResponse.isPresent());
     }
 
+    @Test
+    public void testGetResponseFileDownloadResponse() {
+        FileDownloadResponse testFileDownloadResponse = new FileDownloadResponse(true, "Some message", "blobblob");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(testFileDownloadResponse.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(
+                testFileDownloadResponse,
+                parsedResponse.get()
+        );
+    }
+
+    @Test
+    public void testGetResponseFileDownloadResponseInvalidData() {
+        JSONObject invalidRequest = new JSONObject("{\"response_type\": \"FILE_DOWNLOAD\", \"successful\": true, \"message\": \"\", \"data\": {}}");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidRequest);
+
+        assertFalse(parsedResponse.isPresent());
+    }
+
+    @Test
+    public void testGetResponseFileDownloadResponseNoData() {
+        JSONObject invalidRequest = new JSONObject("{\"response_type\": \"FILE_DOWNLOAD\", \"successful\": true, \"message\": \"\"}");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidRequest);
+
+        assertFalse(parsedResponse.isPresent());
+    }
+
 }
