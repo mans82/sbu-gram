@@ -6,12 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import java.nio.file.Paths;
-
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Paths.get("views", "SignUp.fxml").toString()));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/SignUp.fxml"));
 
         Pane rootPane = fxmlLoader.load();
 

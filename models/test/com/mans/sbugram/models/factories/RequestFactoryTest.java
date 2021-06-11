@@ -59,7 +59,7 @@ public class RequestFactoryTest {
     @Test
     public void testGetRequestSignUpRequest() {
         SignUpRequest request = new SignUpRequest(
-                new User("jafar", "Jafar", "1234", "jafarabad", "Singer")
+                new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "")
         );
 
         Optional<Request> parsedRequest = RequestFactory.getRequest(request.toJSON());

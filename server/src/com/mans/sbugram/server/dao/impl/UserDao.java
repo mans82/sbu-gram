@@ -35,8 +35,9 @@ public class UserDao implements Dao<User, String> {
             String password = object.getString("password");
             String city = object.getString("city");
             String bio = object.getString("bio");
+            String profilePhotoFilename = object.getString("profilePhotoFilename");
 
-            this.cache.put(username, new User(username, name, password, city, bio));
+            this.cache.put(username, new User(username, name, password, city, bio, profilePhotoFilename));
         }
     }
 

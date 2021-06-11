@@ -4,10 +4,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
 
 <HBox fx:id="rootHBox" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mans.sbugram.client.controllers.SignUp">
    <children>
@@ -23,6 +24,16 @@
       </VBox>
       <VBox fx:id="inputVBox" alignment="CENTER" fillWidth="false" prefHeight="400.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: #e6e6e6;">
          <children>
+            <HBox fx:id="profilePhotoHBox" alignment="CENTER" prefHeight="112.0" prefWidth="322.0" spacing="10.0">
+               <children>
+                  <ImageView fx:id="profilePhotoImageView" fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@/icons/account.png" />
+                     </image>
+                  </ImageView>
+                  <Button fx:id="profilePhotoButton" mnemonicParsing="false" onAction="#onProfilePhotoButtonAction" text="Choose..." />
+               </children>
+            </HBox>
             <TextField fx:id="usernameTextField" prefWidth="160.0" promptText="Username" />
             <PasswordField fx:id="passwordPasswordField" prefWidth="160.0" promptText="Password" />
             <TextField fx:id="nameTextField" layoutX="130.0" layoutY="141.0" prefWidth="160.0" promptText="Name" />

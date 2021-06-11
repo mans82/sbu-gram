@@ -7,12 +7,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -30,15 +28,21 @@ public class Login {
     public Button switchSignUpButton;
 
 
-    public void onLoginButtonAction() {
+    public void onLoginButtonAction(ActionEvent actionEvent) {
         String username = usernameTextField.getText();
         String password = passwordPasswordField.getText();
+
+        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
 
         Socket serverConnectionSocket;
         try {
             serverConnectionSocket = new Socket("localhost", 8228);
         } catch (IOException e) {
-            statusLabel.setText("Connection to server error");
+            Alert errorAlert =  new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Server connection failed");
+            errorAlert.initModality(Modality.WINDOW_MODAL);
+            errorAlert.initOwner(currentStage);
+            errorAlert.show();
             return;
         }
 
@@ -48,21 +52,34 @@ public class Login {
         );
 
         requestSendTask.setOnSucceeded(workerStateEvent -> {
+            loginButton.setText("Login");
+            loginButton.setDisable(false);
             LoginResponse response = (LoginResponse) requestSendTask.getValue();
             if (response.successful) {
-                statusLabel.setText("Logged in!");
+                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
+                infoAlert.setHeaderText("Login successful!");
+                infoAlert.initOwner(currentStage);
+                infoAlert.initModality(Modality.WINDOW_MODAL);
+                infoAlert.show();
             } else {
-                statusLabel.setText("Login failed: " + response.message);
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("Login failed");
+                errorAlert.setContentText(response.message);
+                errorAlert.initOwner(currentStage);
+                errorAlert.initModality(Modality.WINDOW_MODAL);
+                errorAlert.show();
             }
         });
 
         new Thread(requestSendTask).start();
+        loginButton.setDisable(true);
+        loginButton.setText("Logging in...");
     }
 
 
     public void onSwitchSignUpButton(ActionEvent actionEvent) throws IOException {
         Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        HBox rootOfScene = new FXMLLoader(getClass().getResource("../views/SignUp.fxml")).load();
+        HBox rootOfScene = new FXMLLoader(getClass().getResource("../../../../../../resources/views/SignUp.fxml")).load();
 
         currentStage.setScene(new Scene(rootOfScene));
     }

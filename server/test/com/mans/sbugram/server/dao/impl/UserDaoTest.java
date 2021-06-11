@@ -19,7 +19,7 @@ public class UserDaoTest {
 
     File tempDataDirectory;
     UserDao dao;
-    final User testUser = new User("_jafar_", "Jafar", "1234", "jafarabad", "Singer");
+    final User testUser = new User("_jafar_", "Jafar", "1234", "jafarabad", "Singer", "");
 
     @Before
     public void setUp() throws IOException {

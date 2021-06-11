@@ -49,7 +49,7 @@ public class ServerTest {
 
         UserDao mockDao = mock(UserDao.class);
         when(mockDao.get("jafar"))
-                .thenReturn(Optional.of(new User("jafar", "Jafar", "1234", "jafarabad", "Singer")));
+                .thenReturn(Optional.of(new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "")));
 
         EventManager eventManager = new EventManager();
         eventManager.addEventHandler(new LoginEventHandler(mockDao));
@@ -91,7 +91,7 @@ public class ServerTest {
 
         UserDao mockDao = mock(UserDao.class);
         when(mockDao.get("jafar"))
-                .thenReturn(Optional.of(new User("jafar", "Jafar", "1234", "jafarabad", "Singer")));
+                .thenReturn(Optional.of(new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "")));
 
         EventManager eventManager = new EventManager();
         eventManager.addEventHandler(new LoginEventHandler(mockDao));

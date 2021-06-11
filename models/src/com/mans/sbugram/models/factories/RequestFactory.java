@@ -59,7 +59,7 @@ public class RequestFactory {
     }
 
     private static SignUpRequest newSignUpRequest(JSONObject object) {
-        String name, username, password, city, bio;
+        String name, username, password, city, bio, profilePhotoFilename;
 
         try {
             name = object.getString("name");
@@ -67,9 +67,10 @@ public class RequestFactory {
             password = object.getString("password");
             city = object.getString("city");
             bio = object.getString("bio");
+            profilePhotoFilename = object.getString("profilePhotoFilename");
 
             return new SignUpRequest(
-                    new User(username, name, password, city, bio)
+                    new User(username, name, password, city, bio, profilePhotoFilename)
             );
         } catch (JSONException e) {
             return null;

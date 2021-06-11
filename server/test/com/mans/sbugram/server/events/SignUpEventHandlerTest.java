@@ -21,7 +21,7 @@ public class SignUpEventHandlerTest {
 
     private UserDao mockDao;
     private SignUpEventHandler eventHandler;
-    private final User testUser = new User("jafar", "Jafar", "1234", "jafarabad", "Singer");
+    private final User testUser = new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "");
 
 
     @Before
@@ -59,7 +59,7 @@ public class SignUpEventHandlerTest {
         when(mockDao.get("jafar"))
                 .thenReturn(Optional.of(testUser));
 
-        User otherUserWithSameUsername = new User("jafar", "Asghar", "4321", "AsgharAbad", "Not a singer");
+        User otherUserWithSameUsername = new User("jafar", "Asghar", "4321", "AsgharAbad", "Not a singer", "");
         SignUpResponse response = (SignUpResponse) eventHandler.handleEvent(
                 new SignUpRequest(otherUserWithSameUsername)
         );
