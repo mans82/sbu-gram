@@ -26,6 +26,14 @@ public class SignUpEventHandler implements EventHandler{
         SignUpRequest signUpRequest = (SignUpRequest) request;
 
         try {
+            if (signUpRequest.user.username.length() < 4 || signUpRequest.user.username.length() > 16) {
+                return new SignUpResponse(false, "Username should have 4 to 16 characters");
+            }
+
+            if (!signUpRequest.user.password.matches("[A-Za-z0-9]{8,}")) {
+                return new SignUpResponse(false, "Invalid password (should be at least 8 characters and only contain letters and numbers)");
+            }
+
             if (dao.get(signUpRequest.user.username).isPresent()) {
                 return new SignUpResponse(false, "Username already signed up");
             }

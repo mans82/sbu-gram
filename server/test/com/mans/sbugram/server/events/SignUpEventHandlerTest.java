@@ -21,7 +21,7 @@ public class SignUpEventHandlerTest {
 
     private UserDao mockDao;
     private SignUpEventHandler eventHandler;
-    private final User testUser = new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "");
+    private final User testUser = new User("jafar", "Jafar", "12345678", "jafarabad", "Singer", "");
 
 
     @Before
@@ -55,13 +55,52 @@ public class SignUpEventHandlerTest {
     }
 
     @Test
+    public void testSignUpUsernameInvalidLength() throws Exception {
+        when(mockDao.get("jafar"))
+                .thenReturn(Optional.of(testUser));
+
+        User userWithInvalidUsername = new User("usr", "User", "12345678", "", "", "");
+        SignUpResponse response = (SignUpResponse) eventHandler.handleEvent(
+                new SignUpRequest(userWithInvalidUsername)
+        );
+
+        assertFalse(response.successful);
+    }
+
+    @Test
     public void testSignUpUsernameAlreadySignedUp() throws Exception {
         when(mockDao.get("jafar"))
                 .thenReturn(Optional.of(testUser));
 
-        User otherUserWithSameUsername = new User("jafar", "Asghar", "4321", "AsgharAbad", "Not a singer", "");
+        User otherUserWithSameUsername = new User("jafar", "Asghar", "432101234", "AsgharAbad", "Not a singer", "");
         SignUpResponse response = (SignUpResponse) eventHandler.handleEvent(
                 new SignUpRequest(otherUserWithSameUsername)
+        );
+
+        assertFalse(response.successful);
+    }
+
+    @Test
+    public void testSignUpInvalidPasswordNotEnoughChars() throws Exception {
+        when(mockDao.get("jafar"))
+                .thenReturn(Optional.of(testUser));
+
+        User userWithInvalidPassword = new User("jafar", "Jafar", "hehe", "JafarAbad", "Singer", "");
+        SignUpResponse response = (SignUpResponse) eventHandler.handleEvent(
+                new SignUpRequest(userWithInvalidPassword)
+        );
+
+        assertFalse(response.successful);
+    }
+
+    @Test
+    public void testSignUpInvalidPasswordInvalidChars() throws Exception {
+        when(mockDao.get("jafar"))
+                .thenReturn(Optional.of(testUser));
+
+        User userWithInvalidPassword = new User("jafar", "Jafar", "1nv4l1D_cH4r5", "JafarAbad", "Singer", "");
+        SignUpResponse response = (SignUpResponse) eventHandler.handleEvent(
+                new SignUpRequest(userWithInvalidPassword)
         );
 
         assertFalse(response.successful);
