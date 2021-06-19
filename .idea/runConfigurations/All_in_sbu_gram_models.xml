@@ -38,6 +38,11 @@
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
+        <option name="PATTERN" value="com.mans.sbugram.models.Post" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
         <option name="PATTERN" value="com.mans.sbugram.models.*" />
         <option name="ENABLED" value="true" />
       </pattern>
