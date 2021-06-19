@@ -16,6 +16,7 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 public class ClientHandlerTest {
 
-    private final User testUser = new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "");
+    private final User testUser = new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "", Collections.emptySet());
     private final UserDao mockDao = mock(UserDao.class);
 
     @Before

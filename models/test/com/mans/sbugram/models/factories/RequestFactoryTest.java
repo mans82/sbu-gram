@@ -5,6 +5,7 @@ import com.mans.sbugram.models.requests.*;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
@@ -59,7 +60,7 @@ public class RequestFactoryTest {
     @Test
     public void testGetRequestSignUpRequest() {
         SignUpRequest request = new SignUpRequest(
-                new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "")
+                new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "", Collections.emptySet())
         );
 
         Optional<Request> parsedRequest = RequestFactory.getRequest(request.toJSON());

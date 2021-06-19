@@ -1,9 +1,8 @@
 package com.mans.sbugram.server.dao.impl;
 
+import com.mans.sbugram.models.User;
 import com.mans.sbugram.server.dao.Dao;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
-import com.mans.sbugram.models.User;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -11,6 +10,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class UserDao implements Dao<User, String> {
 
@@ -21,14 +22,23 @@ public class UserDao implements Dao<User, String> {
         this.dataDirectory = dataDirectory;
     }
 
-    private void updateCache() throws IOException, JSONException {
+    @Override
+    public Optional<User> get(String id) throws PersistentOperationException {
+        List<String> usernames = this.getDirectoryFiles(this.dataDirectory).stream()
+                .map(pathString -> Paths.get(pathString).getFileName().toString())
+                .map(filename -> filename.substring(0, filename.length() - 5))
+                .collect(Collectors.toList());
 
-        List<String> userFilesPaths = this.getDirectoryFiles(this.dataDirectory);
+        if (usernames.contains(id.toLowerCase())) {
 
-        this.cache.clear();
-
-        for (String path : userFilesPaths) {
-            JSONObject object = new JSONObject(new JSONTokener(this.getFileReader(path)));
+            JSONObject object;
+            try {
+                object = new JSONObject(new JSONTokener(
+                        this.getFileReader(Paths.get(this.dataDirectory, id.toLowerCase() + ".json").toString())
+                ));
+            } catch (IOException e) {
+                throw new PersistentOperationException(e);
+            }
 
             String username = object.getString("username");
             String name = object.getString("name");
@@ -36,26 +46,41 @@ public class UserDao implements Dao<User, String> {
             String city = object.getString("city");
             String bio = object.getString("bio");
             String profilePhotoFilename = object.getString("profilePhotoFilename");
+            Set<String> followingUsersUsernames = object.getJSONArray("followingUsersUsernames").toList().stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.toSet());
 
-            this.cache.put(username, new User(username, name, password, city, bio, profilePhotoFilename));
+            return Optional.of(
+                    new User(username, name, password, city, bio, profilePhotoFilename, followingUsersUsernames)
+            );
+        } else {
+            return Optional.empty();
         }
     }
 
-    @Override
-    public Optional<User> get(String id) throws PersistentOperationException {
+    private Optional<User> getOrEmpty(String id) {
         try {
-            this.updateCache();
-        } catch (IOException e) {
-            throw new PersistentOperationException(e);
+            return this.get(id);
+        } catch (PersistentOperationException e) {
+            return Optional.empty();
         }
+    }
 
-        return Optional.ofNullable(this.cache.getOrDefault(id, null));
+    public List<User> getUsers(Predicate<User> predicate) {
+        return this.getDirectoryFiles(this.dataDirectory).stream()
+                .map(pathString -> Paths.get(pathString).getFileName().toString())
+                .map(filename -> filename.substring(0, filename.length() - 5))
+                .map(this::getOrEmpty)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void save(User data) throws PersistentOperationException{
         try {
-            Writer fileWriter = this.getFileWriter(Paths.get(this.dataDirectory, data.username + ".json").toAbsolutePath().toString());
+            Writer fileWriter = this.getFileWriter(Paths.get(this.dataDirectory, data.username.toLowerCase() + ".json").toAbsolutePath().toString());
             data.toJSON().write(fileWriter);
             fileWriter.flush();
         } catch (IOException e) {

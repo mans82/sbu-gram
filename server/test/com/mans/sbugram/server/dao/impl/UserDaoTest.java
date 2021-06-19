@@ -1,7 +1,7 @@
 package com.mans.sbugram.server.dao.impl;
 
-import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import com.mans.sbugram.models.User;
+import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.After;
@@ -11,15 +11,17 @@ import org.junit.Test;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UserDaoTest {
 
     File tempDataDirectory;
     UserDao dao;
-    final User testUser = new User("_jafar_", "Jafar", "1234", "jafarabad", "Singer", "");
+    final User testUser = new User("_jafar_", "Jafar", "1234", "jafarabad", "Singer", "", new HashSet<>());
 
     @Before
     public void setUp() throws IOException {
@@ -103,5 +105,30 @@ public class UserDaoTest {
                 dao.get("nonexistent_username")
         );
 
+    }
+
+    @Test
+    public void testGetUser() throws Exception {
+        dao.save(
+                new User("user_1", "User1", "1234", "", "", "", Arrays.stream(new String[] {"user_2"}).collect(Collectors.toSet()))
+        );
+        dao.save(
+                new User("user_2", "User2", "123456", "", "", "", Collections.emptySet())
+        );
+        dao.save(
+                new User("user_3", "User3", "1234", "", "", "", Arrays.stream(new String[] {"user_2"}).collect(Collectors.toSet()))
+        );
+
+        List<User> user2Followers = dao.getUsers(user -> user.followingUsersUsernames.contains("user_2"));
+
+        assertEquals(2, user2Followers.size());
+        assertTrue(
+                user2Followers.stream()
+                .anyMatch(user -> user.username.equals("user_1"))
+        );
+        assertTrue(
+                user2Followers.stream()
+                .anyMatch(user -> user.username.equals("user_3"))
+        );
     }
 }

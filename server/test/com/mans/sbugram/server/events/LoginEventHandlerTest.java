@@ -1,17 +1,18 @@
 package com.mans.sbugram.server.events;
 
-import com.mans.sbugram.server.dao.impl.UserDao;
-import com.mans.sbugram.server.exceptions.PersistentOperationException;
-import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
 import com.mans.sbugram.models.User;
 import com.mans.sbugram.models.requests.LoginRequest;
 import com.mans.sbugram.models.requests.Request;
 import com.mans.sbugram.models.requests.RequestType;
 import com.mans.sbugram.models.responses.LoginResponse;
+import com.mans.sbugram.server.dao.impl.UserDao;
+import com.mans.sbugram.server.exceptions.PersistentOperationException;
+import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class LoginEventHandlerTest {
 
     UserDao mockedDao;
-    User testUser = new User("jafar", "Jafar Jafari", "1234", "jafarabad", "Singer", "");
+    User testUser = new User("jafar", "Jafar Jafari", "1234", "jafarabad", "Singer", "", Collections.emptySet());
     LoginEventHandler handler;
 
     @Before

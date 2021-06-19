@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.Collections;
 
 public class SignUp {
 
@@ -64,7 +65,7 @@ public class SignUp {
         }
 
         RequestSendTask requestSendTask = new RequestSendTask(
-                new SignUpRequest(new User(username, name, password, city, bio, profilePhotoFilename)),
+                new SignUpRequest(new User(username, name, password, city, bio, profilePhotoFilename, Collections.emptySet())),
                 serverConnection
         );
 

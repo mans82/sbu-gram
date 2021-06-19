@@ -11,6 +11,7 @@ import com.mans.sbugram.models.responses.SignUpResponse;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -21,7 +22,7 @@ public class SignUpEventHandlerTest {
 
     private UserDao mockDao;
     private SignUpEventHandler eventHandler;
-    private final User testUser = new User("jafar", "Jafar", "12345678", "jafarabad", "Singer", "");
+    private final User testUser = new User("jafar", "Jafar", "12345678", "jafarabad", "Singer", "", Collections.emptySet());
 
 
     @Before
@@ -59,7 +60,7 @@ public class SignUpEventHandlerTest {
         when(mockDao.get("jafar"))
                 .thenReturn(Optional.of(testUser));
 
-        User userWithInvalidUsername = new User("usr", "User", "12345678", "", "", "");
+        User userWithInvalidUsername = new User("usr", "User", "12345678", "", "", "", Collections.emptySet());
         SignUpResponse response = (SignUpResponse) eventHandler.handleEvent(
                 new SignUpRequest(userWithInvalidUsername)
         );
@@ -72,7 +73,7 @@ public class SignUpEventHandlerTest {
         when(mockDao.get("jafar"))
                 .thenReturn(Optional.of(testUser));
 
-        User otherUserWithSameUsername = new User("jafar", "Asghar", "432101234", "AsgharAbad", "Not a singer", "");
+        User otherUserWithSameUsername = new User("jafar", "Asghar", "432101234", "AsgharAbad", "Not a singer", "", Collections.emptySet());
         SignUpResponse response = (SignUpResponse) eventHandler.handleEvent(
                 new SignUpRequest(otherUserWithSameUsername)
         );
@@ -85,7 +86,7 @@ public class SignUpEventHandlerTest {
         when(mockDao.get("jafar"))
                 .thenReturn(Optional.of(testUser));
 
-        User userWithInvalidPassword = new User("jafar", "Jafar", "hehe", "JafarAbad", "Singer", "");
+        User userWithInvalidPassword = new User("jafar", "Jafar", "hehe", "JafarAbad", "Singer", "", Collections.emptySet());
         SignUpResponse response = (SignUpResponse) eventHandler.handleEvent(
                 new SignUpRequest(userWithInvalidPassword)
         );
@@ -98,7 +99,7 @@ public class SignUpEventHandlerTest {
         when(mockDao.get("jafar"))
                 .thenReturn(Optional.of(testUser));
 
-        User userWithInvalidPassword = new User("jafar", "Jafar", "1nv4l1D_cH4r5", "JafarAbad", "Singer", "");
+        User userWithInvalidPassword = new User("jafar", "Jafar", "1nv4l1D_cH4r5", "JafarAbad", "Singer", "", Collections.emptySet());
         SignUpResponse response = (SignUpResponse) eventHandler.handleEvent(
                 new SignUpRequest(userWithInvalidPassword)
         );

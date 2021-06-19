@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
@@ -49,7 +50,7 @@ public class ServerTest {
 
         UserDao mockDao = mock(UserDao.class);
         when(mockDao.get("jafar"))
-                .thenReturn(Optional.of(new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "")));
+                .thenReturn(Optional.of(new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "", Collections.emptySet())));
 
         EventManager eventManager = new EventManager();
         eventManager.addEventHandler(new LoginEventHandler(mockDao));
@@ -91,7 +92,7 @@ public class ServerTest {
 
         UserDao mockDao = mock(UserDao.class);
         when(mockDao.get("jafar"))
-                .thenReturn(Optional.of(new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "")));
+                .thenReturn(Optional.of(new User("jafar", "Jafar", "1234", "jafarabad", "Singer", "", Collections.emptySet())));
 
         EventManager eventManager = new EventManager();
         eventManager.addEventHandler(new LoginEventHandler(mockDao));

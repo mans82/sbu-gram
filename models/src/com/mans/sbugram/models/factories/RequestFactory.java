@@ -5,6 +5,7 @@ import com.mans.sbugram.models.requests.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.Optional;
 
 public class RequestFactory {
@@ -70,7 +71,7 @@ public class RequestFactory {
             profilePhotoFilename = object.getString("profilePhotoFilename");
 
             return new SignUpRequest(
-                    new User(username, name, password, city, bio, profilePhotoFilename)
+                    new User(username, name, password, city, bio, profilePhotoFilename, Collections.emptySet())
             );
         } catch (JSONException e) {
             return null;
