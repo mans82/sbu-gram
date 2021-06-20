@@ -114,10 +114,10 @@ public class PostDaoTest {
     @Test
     public void testGetPosts() throws Exception {
         dao.save(
-                new Post(1, 123, "title1", "content1", "", "jafar")
+                new Post(1, 234, "title2", "content2", "", "jafar2")
         );
         dao.save(
-                new Post(1, 234, "title2", "content2", "", "jafar2")
+                new Post(1, 123, "title1", "content1", "", "jafar")
         );
         dao.save(
                 new Post(1, 345, "title3", "content3", "", "jafar3")
@@ -126,8 +126,8 @@ public class PostDaoTest {
         List<Post> filteredPost = dao.getPosts(post -> post.postedTime < 300, 1000);
 
         assertEquals(2, filteredPost.size());
-        assertTrue(filteredPost.stream().anyMatch(post -> post.title.equals("title1")));
-        assertTrue(filteredPost.stream().anyMatch(post -> post.title.equals("title2")));
+        assertEquals("title1", filteredPost.get(0).title);
+        assertEquals("title2", filteredPost.get(1).title);
 
         List<Post> filteredPostEmpty = dao.getPosts(post -> post.title.equals("non existent title"), 1000);
         assertTrue(filteredPostEmpty.isEmpty());
