@@ -123,13 +123,13 @@ public class PostDaoTest {
                 new Post(1, 345, "title3", "content3", "", "jafar3")
         );
 
-        List<Post> filteredPost = dao.getPosts(post -> post.postedTime < 300);
+        List<Post> filteredPost = dao.getPosts(post -> post.postedTime < 300, 1000);
 
         assertEquals(2, filteredPost.size());
         assertTrue(filteredPost.stream().anyMatch(post -> post.title.equals("title1")));
         assertTrue(filteredPost.stream().anyMatch(post -> post.title.equals("title2")));
 
-        List<Post> filteredPostEmpty = dao.getPosts(post -> post.title.equals("non existent title"));
+        List<Post> filteredPostEmpty = dao.getPosts(post -> post.title.equals("non existent title"), 1000);
         assertTrue(filteredPostEmpty.isEmpty());
     }
 }

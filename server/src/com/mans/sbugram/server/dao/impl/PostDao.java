@@ -96,7 +96,7 @@ public class PostDao implements Dao<Post, Integer> {
         }
     }
 
-    public List<Post> getPosts(Predicate<Post> predicate) {
+    public List<Post> getPosts(Predicate<Post> predicate, int limit) {
         return this.getDirectoryFiles(this.filesDirectory).stream()
                 .map(filename -> Paths.get(filename).getFileName().toString())
                 .map(filename -> filename.substring(0, filename.length() - 5))
@@ -104,6 +104,7 @@ public class PostDao implements Dao<Post, Integer> {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .filter(predicate)
+                .limit(limit)
                 .collect(Collectors.toList());
     }
 }
