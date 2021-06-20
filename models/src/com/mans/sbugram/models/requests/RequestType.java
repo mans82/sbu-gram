@@ -4,5 +4,6 @@ public enum RequestType {
     SIGNUP,
     LOGIN,
     FILE_UPLOAD,
-    FILE_DOWNLOAD
+    FILE_DOWNLOAD,
+    USER_TIMELINE
 }

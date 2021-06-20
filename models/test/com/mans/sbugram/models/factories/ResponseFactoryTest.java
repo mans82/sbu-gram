@@ -1,9 +1,11 @@
 package com.mans.sbugram.models.factories;
 
+import com.mans.sbugram.models.Post;
 import com.mans.sbugram.models.responses.*;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -76,16 +78,16 @@ public class ResponseFactoryTest {
 
     @Test
     public void testGetResponseFileUploadResponseInvalidData() {
-        JSONObject invalidRequest = new JSONObject("{\"response_type\": \"FILE_UPLOAD\", \"successful\": true, \"message\": \"\", \"data\": {}}");
-        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidRequest);
+        JSONObject invalidResponse = new JSONObject("{\"response_type\": \"FILE_UPLOAD\", \"successful\": true, \"message\": \"\", \"data\": {}}");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidResponse);
 
         assertFalse(parsedResponse.isPresent());
     }
 
     @Test
     public void testGetResponseFileUploadResponseNoData() {
-        JSONObject invalidRequest = new JSONObject("{\"response_type\": \"FILE_UPLOAD\", \"successful\": true, \"message\": \"\"}");
-        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidRequest);
+        JSONObject invalidResponse = new JSONObject("{\"response_type\": \"FILE_UPLOAD\", \"successful\": true, \"message\": \"\"}");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidResponse);
 
         assertFalse(parsedResponse.isPresent());
     }
@@ -104,18 +106,42 @@ public class ResponseFactoryTest {
 
     @Test
     public void testGetResponseFileDownloadResponseInvalidData() {
-        JSONObject invalidRequest = new JSONObject("{\"response_type\": \"FILE_DOWNLOAD\", \"successful\": true, \"message\": \"\", \"data\": {}}");
-        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidRequest);
+        JSONObject invalidResponse = new JSONObject("{\"response_type\": \"FILE_DOWNLOAD\", \"successful\": true, \"message\": \"\", \"data\": {}}");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidResponse);
 
         assertFalse(parsedResponse.isPresent());
     }
 
     @Test
     public void testGetResponseFileDownloadResponseNoData() {
-        JSONObject invalidRequest = new JSONObject("{\"response_type\": \"FILE_DOWNLOAD\", \"successful\": true, \"message\": \"\"}");
-        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidRequest);
+        JSONObject invalidResponse = new JSONObject("{\"response_type\": \"FILE_DOWNLOAD\", \"successful\": true, \"message\": \"\"}");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidResponse);
 
         assertFalse(parsedResponse.isPresent());
     }
 
+    @Test
+    public void testGetResponseUserTimelineResponse() {
+        UserTimelineResponse testUserTimelineResponse = new UserTimelineResponse(
+                true,
+                "some message",
+                Arrays.asList(
+                        new Post(0, 12, "title1", "content1", "", "jafar"),
+                        new Post(1, 14, "title2", "content2", "", "akbar")
+                )
+        );
+
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(testUserTimelineResponse.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(testUserTimelineResponse, parsedResponse.get());
+    }
+
+    @Test
+    public void testGetResponseUserTimelineResponseInvalidData() {
+        JSONObject invalidResponse = new JSONObject("{\"data\":{\"timeline_posts\":[{\"photoFilename\":\"\",\"isRepost\":false,\"id\":0,\"title\":\"title1\",\"content\":\"content1\",\"posterUsername\":\"jafar\",\"repostedPostId\":-1},{\"photoFilename\":\"\",\"isRepost\":false,\"postedTime\":14,\"id\":1,\"title\":\"title2\",\"content\":\"content2\",\"posterUsername\":\"akbar\",\"repostedPostId\":-1}]},\"response_type\":\"USER_TIMELINE\",\"message\":\"some message\",\"successful\":true}");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidResponse);
+
+        assertFalse(parsedResponse.isPresent());
+    }
 }

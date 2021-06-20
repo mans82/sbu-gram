@@ -113,4 +113,24 @@ public class RequestFactoryTest {
 
         assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
     }
+
+    @Test
+    public void testGetRequestUserTimelineRequest() {
+        UserTimelineRequest request = new UserTimelineRequest("jafar", "1234", 1234, 2);
+
+        Optional<Request> parsedRequest = RequestFactory.getRequest(request.toJSON());
+
+        assertTrue(parsedRequest.isPresent());
+        assertEquals(
+                request,
+                parsedRequest.get()
+        );
+    }
+
+    @Test
+    public void testGetRequestUserTimelineRequestInvalidData() {
+        JSONObject invalidRequest = new JSONObject("{\"request_type\": \"USER_TIMELINE\", \"data\": {\"username\": \"jafar\", \"fromtime\": 12, \"count\": 2}}");
+
+        assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
+    }
 }

@@ -42,6 +42,8 @@ public class RequestFactory {
                 return Optional.ofNullable(newFileUploadRequest(data));
             case FILE_DOWNLOAD:
                 return Optional.ofNullable(newFileDownloadRequest(data));
+            case USER_TIMELINE:
+                return Optional.ofNullable(newUserTimelineRequest(data));
         }
 
         return Optional.empty();
@@ -59,16 +61,16 @@ public class RequestFactory {
         }
     }
 
-    private static SignUpRequest newSignUpRequest(JSONObject object) {
+    private static SignUpRequest newSignUpRequest(JSONObject data) {
         String name, username, password, city, bio, profilePhotoFilename;
 
         try {
-            name = object.getString("name");
-            username = object.getString("username");
-            password = object.getString("password");
-            city = object.getString("city");
-            bio = object.getString("bio");
-            profilePhotoFilename = object.getString("profilePhotoFilename");
+            name = data.getString("name");
+            username = data.getString("username");
+            password = data.getString("password");
+            city = data.getString("city");
+            bio = data.getString("bio");
+            profilePhotoFilename = data.getString("profilePhotoFilename");
 
             return new SignUpRequest(
                     new User(username, name, password, city, bio, profilePhotoFilename, Collections.emptySet())
@@ -78,11 +80,11 @@ public class RequestFactory {
         }
     }
 
-    private static FileUploadRequest newFileUploadRequest(JSONObject object) {
+    private static FileUploadRequest newFileUploadRequest(JSONObject data) {
         String blob;
 
         try {
-            blob = object.getString("blob");
+            blob = data.getString("blob");
         } catch (JSONException e) {
             return null;
         }
@@ -90,16 +92,34 @@ public class RequestFactory {
         return new FileUploadRequest(blob);
     }
 
-    private static FileDownloadRequest newFileDownloadRequest(JSONObject object) {
+    private static FileDownloadRequest newFileDownloadRequest(JSONObject data) {
         String filename;
 
         try {
-            filename = object.getString("filename");
+            filename = data.getString("filename");
         } catch (JSONException e) {
             return null;
         }
 
         return new FileDownloadRequest(filename);
+    }
+
+    private static UserTimelineRequest newUserTimelineRequest(JSONObject data) {
+        String username;
+        String password;
+        long fromTime;
+        int count;
+
+        try {
+            username = data.getString("username");
+            password = data.getString("password");
+            fromTime = data.getLong("fromtime");
+            count = data.getInt("count");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new UserTimelineRequest(username, password, fromTime, count);
     }
 
 }

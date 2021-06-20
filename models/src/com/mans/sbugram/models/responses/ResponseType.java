@@ -4,5 +4,6 @@ public enum ResponseType {
     LOGIN,
     SIGNUP,
     FILE_UPLOAD,
-    FILE_DOWNLOAD
+    FILE_DOWNLOAD,
+    USER_TIMELINE
 }
