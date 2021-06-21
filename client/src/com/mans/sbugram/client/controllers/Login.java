@@ -6,6 +6,7 @@ import com.mans.sbugram.models.responses.LoginResponse;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -55,12 +56,32 @@ public class Login {
             loginButton.setText("Login");
             loginButton.setDisable(false);
             LoginResponse response = (LoginResponse) requestSendTask.getValue();
+
             if (response.successful) {
                 Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
                 infoAlert.setHeaderText("Login successful!");
                 infoAlert.initOwner(currentStage);
                 infoAlert.initModality(Modality.WINDOW_MODAL);
-                infoAlert.show();
+                infoAlert.showAndWait();
+
+                currentStage.close();
+
+                Stage timelineStage = new Stage();
+                FXMLLoader timelineLoader = new FXMLLoader(getClass().getResource("/views/Timeline.fxml"));
+                Parent timelineRoot;
+                try {
+                    timelineRoot = timelineLoader.load();
+                } catch (IOException e) {
+                    return;
+                }
+
+                Timeline timelineController = timelineLoader.getController();
+
+                timelineController.setUsername(username);
+                timelineController.setPassword(password);
+
+                timelineStage.setScene(new Scene(timelineRoot));
+                timelineStage.show();
             } else {
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                 errorAlert.setHeaderText("Login failed");
@@ -79,7 +100,7 @@ public class Login {
 
     public void onSwitchSignUpButton(ActionEvent actionEvent) throws IOException {
         Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        HBox rootOfScene = new FXMLLoader(getClass().getResource("../../../../../../resources/views/SignUp.fxml")).load();
+        HBox rootOfScene = new FXMLLoader(getClass().getResource("/views/SignUp.fxml")).load();
 
         currentStage.setScene(new Scene(rootOfScene));
     }

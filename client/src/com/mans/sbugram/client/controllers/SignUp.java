@@ -99,7 +99,7 @@ public class SignUp {
 
     public void onSwitchLoginButtonAction(ActionEvent actionEvent) throws IOException {
         Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        HBox rootOfScene = new FXMLLoader(getClass().getResource("../../../../../../resources/views/Login.fxml")).load();
+        HBox rootOfScene = new FXMLLoader(getClass().getResource("/views/Login.fxml")).load();
 
         currentStage.setScene(new Scene(rootOfScene));
     }
