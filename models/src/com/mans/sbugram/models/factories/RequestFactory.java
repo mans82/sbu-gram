@@ -44,6 +44,8 @@ public class RequestFactory {
                 return Optional.ofNullable(newFileDownloadRequest(data));
             case USER_TIMELINE:
                 return Optional.ofNullable(newUserTimelineRequest(data));
+            case USER_INFO:
+                return Optional.ofNullable(newUserInfoRequest(data));
         }
 
         return Optional.empty();
@@ -120,6 +122,18 @@ public class RequestFactory {
         }
 
         return new UserTimelineRequest(username, password, fromTime, count);
+    }
+
+    private static UserInfoRequest newUserInfoRequest(JSONObject data) {
+        String username;
+
+        try {
+            username = data.getString("username");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new UserInfoRequest(username);
     }
 
 }

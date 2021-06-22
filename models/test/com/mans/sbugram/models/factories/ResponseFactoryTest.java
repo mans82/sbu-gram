@@ -1,11 +1,13 @@
 package com.mans.sbugram.models.factories;
 
 import com.mans.sbugram.models.Post;
+import com.mans.sbugram.models.User;
 import com.mans.sbugram.models.responses.*;
 import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -143,5 +145,47 @@ public class ResponseFactoryTest {
         Optional<Response> parsedResponse = ResponseFactory.getResponse(invalidResponse);
 
         assertFalse(parsedResponse.isPresent());
+    }
+
+    @Test
+    public void testGetResponseUserInfoResponse() {
+        UserInfoResponse response = new UserInfoResponse(
+                true,
+                "some message",
+                new User("jafar", "Jafar", "1234", "", "", "", new HashSet<>(Arrays.asList("asghar", "akbar")))
+        );
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(response.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        UserInfoResponse castedParsedResponse = (UserInfoResponse) parsedResponse.get();
+        assertEquals(
+                response,
+                castedParsedResponse
+        );
+        assertEquals(2, castedParsedResponse.user.followingUsersUsernames.size());
+        assertTrue(castedParsedResponse.user.followingUsersUsernames.contains("akbar"));
+    }
+
+    @Test
+    public void testGetResponseUserInfoResponseInvalidData() {
+        JSONObject invalidResponse = new JSONObject("{\"data\":{\"user\":{\"city\":\"\",\"followingUsersUsernames\":[\"akbar\",\"asghar\"],\"name\":\"Jafar\",\"bio\":\"\",\"profilePhotoFilename\":\"\",\"username\":\"jafar\"}},\"response_type\":\"USER_INFO\",\"message\":\"some message\",\"successful\":true}");
+
+        assertFalse(ResponseFactory.getResponse(invalidResponse).isPresent());
+    }
+
+    @Test
+    public void testGetResponseUserInfoResponseNoUser() {
+        UserInfoResponse response = new UserInfoResponse(
+                false,
+                "some message",
+                null
+        );
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(response.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(
+                response,
+                parsedResponse.get()
+        );
     }
 }

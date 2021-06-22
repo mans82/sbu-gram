@@ -21,6 +21,7 @@ public class Main {
         eventManager.addEventHandler(new FileUploadEventHandler(fileDao));
         eventManager.addEventHandler(new FileDownloadEventHandler(fileDao));
         eventManager.addEventHandler(new UserTimelineEventHandler(userDao, postDao));
+        eventManager.addEventHandler(new UserInfoEventHandler(userDao));
 
         Server server = new Server(new ServerSocket(8228), eventManager);
         server.start();

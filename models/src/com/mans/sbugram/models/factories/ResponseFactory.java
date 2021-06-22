@@ -1,6 +1,7 @@
 package com.mans.sbugram.models.factories;
 
 import com.mans.sbugram.models.Post;
+import com.mans.sbugram.models.User;
 import com.mans.sbugram.models.responses.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,6 +10,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ResponseFactory {
 
@@ -47,6 +50,8 @@ public class ResponseFactory {
                 return Optional.ofNullable(newFileDownloadResponse(successful, message, data));
             case USER_TIMELINE:
                 return Optional.ofNullable(newUserTimelineResponse(successful, message, data));
+            case USER_INFO:
+                return Optional.ofNullable(newUserInfoResponse(successful, message, data));
         }
 
         return Optional.empty();
@@ -125,4 +130,43 @@ public class ResponseFactory {
         return new UserTimelineResponse(successful, message, timelinePosts);
     }
 
+    private static UserInfoResponse newUserInfoResponse(boolean successful, String message, JSONObject data) {
+        if (data == null) {
+            return null;
+        }
+
+        JSONObject user;
+        String name, username, password, city, bio, profilePhotoFilename;
+        Set<String> followingUsersUsernames;
+
+        try {
+            user = data.getJSONObject("user");
+            if (user.isEmpty()) {
+                return new UserInfoResponse(
+                        successful,
+                        message,
+                        null
+                );
+            }
+
+            name = user.getString("name");
+            username = user.getString("username");
+            password = user.getString("password");
+            city = user.getString("city");
+            bio = user.getString("bio");
+            profilePhotoFilename = user.getString("profilePhotoFilename");
+
+            followingUsersUsernames = user.getJSONArray("followingUsersUsernames").toList().stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.toSet());
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new UserInfoResponse(
+                successful,
+                message,
+                new User(username, name, password, city, bio, profilePhotoFilename, followingUsersUsernames)
+        );
+    }
 }
