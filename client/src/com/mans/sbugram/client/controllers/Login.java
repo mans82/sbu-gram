@@ -77,10 +77,11 @@ public class Login {
 
                 Timeline timelineController = timelineLoader.getController();
 
-                timelineController.setUsername(username);
-                timelineController.setPassword(password);
+                timelineController.setCredentials(username, password);
 
                 timelineStage.setScene(new Scene(timelineRoot));
+                timelineStage.setTitle(username + " - SBUGram");
+
                 timelineStage.show();
             } else {
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR);

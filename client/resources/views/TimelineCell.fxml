@@ -5,26 +5,34 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.text.Font?>
 
 <HBox maxWidth="700.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox fx:id="postTextVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="300.0">
          <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="64.0" spacing="10.0">
+            <HBox fx:id="userInfoHBox" alignment="CENTER_LEFT" prefHeight="64.0" spacing="10.0">
                <children>
-                  <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="profilePhotoImageView" fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
-                        <Insets left="20.0" />
+                        <Insets left="10.0" />
                      </HBox.margin>
                   </ImageView>
-                  <Label text="Name" />
+                  <Label fx:id="nameLabel" text="Name" />
                   <Label fx:id="usernameLabel" opacity="0.7" text="\@username" />
                </children>
             </HBox>
+            <Label fx:id="titleLabel" text="Title" wrapText="true">
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Label>
             <Label fx:id="contentLabel" alignment="TOP_LEFT" text="This is a sample content for this post." wrapText="true">
                <VBox.margin>
-                  <Insets />
+                  <Insets left="10.0" />
                </VBox.margin>
             </Label>
          </children>
@@ -32,6 +40,9 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </VBox>
-      <ImageView fx:id="postPhotoImageView" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="postPhotoImageView" fitWidth="400.0" pickOnBounds="true" preserveRatio="true">
+         <HBox.margin>
+            <Insets bottom="20.0" top="20.0" />
+         </HBox.margin></ImageView>
    </children>
 </HBox>

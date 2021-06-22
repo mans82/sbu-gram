@@ -2,22 +2,24 @@ package com.mans.sbugram.client.controllers;
 
 import com.mans.sbugram.client.controllers.listcells.TimelineListCell;
 import com.mans.sbugram.client.tasks.RequestSendTask;
+import com.mans.sbugram.client.utils.Utils;
 import com.mans.sbugram.models.Post;
 import com.mans.sbugram.models.requests.UserTimelineRequest;
 import com.mans.sbugram.models.responses.UserTimelineResponse;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -34,8 +36,7 @@ public class Timeline implements Initializable {
 
     private ObservableList<Post> timelinePosts;
 
-    private String username;
-    private String password;
+    private final Property<Pair<String, String>> credentials = new SimpleObjectProperty<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -43,19 +44,47 @@ public class Timeline implements Initializable {
         timelineListView.setItems(timelinePosts);
 
         timelineListView.setCellFactory(TimelineListCell::new);
+
+        profilePhotoImageView.setImage(new Image("/icons/account.png"));
+        credentials.addListener((observableValue, oldCredentials, newCredentials) -> {
+            if (newCredentials == null) {
+                return;
+            }
+            String username = newCredentials.getKey();
+            try {
+                Utils.loadUser(username, user -> {
+                    if (!user.profilePhotoFilename.isEmpty()) {
+                        try {
+                            Utils.loadImageFromUploadedFile(profilePhotoImageView, user.profilePhotoFilename);
+                        } catch (IOException e) {
+                            profilePhotoImageView.setImage(new Image("/icons/error.png"));
+                        }
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+                Alert warningAlert = new Alert(Alert.AlertType.WARNING);
+                warningAlert.setHeaderText("Cannot load user data");
+                warningAlert.setContentText("An error occurred while trying to load you user data. Please login to the app again to fix the issue.");
+                warningAlert.showAndWait();
+                return;
+            }
+
+            try {
+                this.refreshButton.fire();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setCredentials(String username, String password) {
+        this.credentials.setValue(new Pair<>(username, password));
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void onRefreshButtonAction(ActionEvent actionEvent) {
-        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-
+    public void onRefreshButtonAction() {
+        String username = this.credentials.getValue().getKey();
+        String password = this.credentials.getValue().getValue();
         Socket serverConnectionSocket;
         try {
             serverConnectionSocket = new Socket("localhost", 8228);
@@ -63,7 +92,6 @@ public class Timeline implements Initializable {
             Alert errorAlert =  new Alert(Alert.AlertType.ERROR);
             errorAlert.setHeaderText("Server connection failed");
             errorAlert.initModality(Modality.WINDOW_MODAL);
-            errorAlert.initOwner(currentStage);
             errorAlert.show();
             return;
         }
@@ -76,8 +104,10 @@ public class Timeline implements Initializable {
         timelineRequestTask.setOnSucceeded(workerStateEvent -> {
             UserTimelineResponse response = ((UserTimelineResponse) timelineRequestTask.getValue());
 
-            timelinePosts.clear();
-            timelinePosts.addAll(response.timelinePosts);
+            if (response.successful) {
+                timelinePosts.clear();
+                timelinePosts.addAll(response.timelinePosts);
+            }
 
             this.refreshButton.setText("Refresh");
             this.refreshButton.setDisable(false);

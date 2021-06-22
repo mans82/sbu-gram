@@ -1,22 +1,18 @@
 package com.mans.sbugram.client.controllers.listcells;
 
-import com.mans.sbugram.client.tasks.RequestSendTask;
+import com.mans.sbugram.client.utils.Utils;
 import com.mans.sbugram.models.Post;
-import com.mans.sbugram.models.requests.FileDownloadRequest;
-import com.mans.sbugram.models.responses.FileDownloadResponse;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.Socket;
-import java.util.Base64;
 
 public class TimelineListCell extends ListCell<Post> {
 
@@ -39,47 +35,59 @@ public class TimelineListCell extends ListCell<Post> {
             return;
         }
 
+        Label nameLabel;
         Label usernameLabel;
+        Label titleLabel;
         Label contentLabel;
         ImageView postPhotoImageView;
         VBox postTextVBox;
+        HBox userInfoHBox;
+        ImageView profilePhotoImageView;
 
         try {
             postTextVBox = (VBox) root.lookup("#postTextVbox");
+            userInfoHBox = (HBox) postTextVBox.lookup("#userInfoHBox");
+            nameLabel = (Label) postTextVBox.lookup("#nameLabel");
             usernameLabel = (Label) postTextVBox.lookup("#usernameLabel");
+            titleLabel = (Label) postTextVBox.lookup("#titleLabel");
             contentLabel = (Label) postTextVBox.lookup("#contentLabel");
             postPhotoImageView = (ImageView) root.lookup("#postPhotoImageView");
+            profilePhotoImageView = (ImageView) userInfoHBox.lookup("#profilePhotoImageView");
         } catch (NullPointerException e) {
             return;
         }
 
+        titleLabel.setText(newPost.title);
         contentLabel.setText(newPost.content);
         usernameLabel.setText("@" + newPost.posterUsername);
+
+        try {
+            Utils.loadUser(newPost.posterUsername, user -> {
+                if (!user.profilePhotoFilename.isEmpty()) {
+                    try {
+                        Utils.loadImageFromUploadedFile(profilePhotoImageView, user.profilePhotoFilename);
+                    } catch (IOException e) {
+                        profilePhotoImageView.setImage(new Image("/icons/error_small.png"));
+                    }
+                } else {
+                    profilePhotoImageView.setImage(new Image("/icons/account.png"));
+                }
+
+                nameLabel.setText(user.name);
+            });
+        } catch (IOException e) {
+            profilePhotoImageView.setImage(new Image("/icons/error_small.png"));
+        }
 
         if (newPost.photoFilename.isEmpty()) {
             root.getChildren().remove(postPhotoImageView);
             postTextVBox.prefWidthProperty().bind(this.prefWidthProperty().subtract(20));
         } else {
-            Socket serverConnectionSocket;
             try {
-                serverConnectionSocket = new Socket("localhost", 8228);
+                Utils.loadImageFromUploadedFile(postPhotoImageView, newPost.photoFilename);
             } catch (IOException e) {
-                return;
+                postPhotoImageView.setImage(new Image("/icons/error_small.png"));
             }
-            RequestSendTask postPhotoDownloadRequestTask = new RequestSendTask(
-                    new FileDownloadRequest(newPost.photoFilename),
-                    serverConnectionSocket
-            );
-
-            postPhotoDownloadRequestTask.setOnSucceeded(workerStateEvent -> {
-                String photoBlob = ((FileDownloadResponse) postPhotoDownloadRequestTask.getValue()).blob;
-                ByteArrayInputStream photoBytesStream = new ByteArrayInputStream(Base64.getDecoder().decode(photoBlob));
-                postPhotoImageView.setImage(
-                        new Image(photoBytesStream)
-                );
-            });
-
-            new Thread(postPhotoDownloadRequestTask).start();
         }
 
         this.setGraphic(root);
