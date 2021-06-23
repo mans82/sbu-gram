@@ -2,6 +2,7 @@ package com.mans.sbugram.server.dao.impl;
 
 import com.mans.sbugram.models.UploadedFile;
 import com.mans.sbugram.server.dao.Dao;
+import com.mans.sbugram.server.exceptions.PersistentDataDoesNotExistException;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 
 import java.io.File;
@@ -48,6 +49,15 @@ public class UploadedFileDao implements Dao<UploadedFile, String> {
             fileWriter.flush();
         } catch (IOException e) {
             throw new PersistentOperationException(e);
+        }
+    }
+
+    @Override
+    public void update(String id, UploadedFile newData) throws PersistentOperationException, PersistentDataDoesNotExistException {
+        if (this.get(id).isPresent()) {
+            this.save(new UploadedFile(id, newData.blob));
+        } else {
+            throw new PersistentDataDoesNotExistException(id);
         }
     }
 }

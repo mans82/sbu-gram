@@ -1,8 +1,11 @@
 package com.mans.sbugram.client.controllers.listcells;
 
+import com.mans.sbugram.client.controllers.Comments;
 import com.mans.sbugram.client.utils.Utils;
 import com.mans.sbugram.models.Post;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -11,14 +14,20 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class TimelineListCell extends ListCell<Post> {
 
-    public TimelineListCell(ListView<Post> postListView) {
+    private final String currentUsername;
+    private final String currentPassword;
+
+    public TimelineListCell(ListView<Post> postListView, String currentUsername, String currentPassword) {
         super();
 
+        this.currentUsername = currentUsername;
+        this.currentPassword = currentPassword;
         this.prefWidthProperty().bind(postListView.widthProperty().subtract(20));
         this.itemProperty().addListener(((observableValue, oldPost, newPost) -> {
             if (newPost != null) {
@@ -43,6 +52,8 @@ public class TimelineListCell extends ListCell<Post> {
         VBox postTextVBox;
         HBox userInfoHBox;
         ImageView profilePhotoImageView;
+        HBox buttonsHBox;
+        Button commentsButton;
 
         try {
             postTextVBox = (VBox) root.lookup("#postTextVbox");
@@ -53,6 +64,8 @@ public class TimelineListCell extends ListCell<Post> {
             contentLabel = (Label) postTextVBox.lookup("#contentLabel");
             postPhotoImageView = (ImageView) root.lookup("#postPhotoImageView");
             profilePhotoImageView = (ImageView) userInfoHBox.lookup("#profilePhotoImageView");
+            buttonsHBox = (HBox) postTextVBox.lookup("#buttonsHBox");
+            commentsButton = (Button) buttonsHBox.lookup("#commentsButton");
         } catch (NullPointerException e) {
             return;
         }
@@ -60,6 +73,29 @@ public class TimelineListCell extends ListCell<Post> {
         titleLabel.setText(newPost.title);
         contentLabel.setText(newPost.content);
         usernameLabel.setText("@" + newPost.posterUsername);
+        commentsButton.setText("Comments " + newPost.comments.size());
+
+        commentsButton.setOnAction(actionEvent -> {
+            Stage commentsStage = new Stage();
+
+            FXMLLoader commentsLoader = new FXMLLoader(getClass().getResource("/views/Comments.fxml"));
+            Scene commentsScene;
+            try {
+                commentsScene = new Scene(commentsLoader.load());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            ((Comments) commentsLoader.getController()).initializeData(newPost, currentUsername, currentPassword);
+
+            commentsStage.setScene(commentsScene);
+            commentsStage.setTitle("Comments");
+
+            commentsButton.setDisable(true);
+            commentsStage.showAndWait();
+            commentsButton.setDisable(false);
+        });
 
         try {
             Utils.loadUser(newPost.posterUsername, user -> {

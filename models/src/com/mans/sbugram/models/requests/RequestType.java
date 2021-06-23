@@ -6,5 +6,6 @@ public enum RequestType {
     FILE_UPLOAD,
     FILE_DOWNLOAD,
     USER_TIMELINE,
-    USER_INFO
+    USER_INFO,
+    ADD_COMMENT,
 }

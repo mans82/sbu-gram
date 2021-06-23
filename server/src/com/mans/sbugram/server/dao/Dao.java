@@ -1,5 +1,6 @@
 package com.mans.sbugram.server.dao;
 
+import com.mans.sbugram.server.exceptions.PersistentDataDoesNotExistException;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 
 import java.io.*;
@@ -14,6 +15,8 @@ public interface Dao<T, I> {
     Optional<T> get(I id) throws PersistentOperationException;
 
     void save(T data) throws PersistentOperationException;
+
+    void update(I id, T newData) throws PersistentOperationException, PersistentDataDoesNotExistException;
 
     default Reader getFileReader(String path) throws FileNotFoundException {
         return new FileReader(path);

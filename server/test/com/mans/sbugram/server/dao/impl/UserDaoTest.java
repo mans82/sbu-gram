@@ -1,6 +1,7 @@
 package com.mans.sbugram.server.dao.impl;
 
 import com.mans.sbugram.models.User;
+import com.mans.sbugram.server.exceptions.PersistentDataDoesNotExistException;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -130,5 +131,23 @@ public class UserDaoTest {
                 user2Followers.stream()
                 .anyMatch(user -> user.username.equals("user_3"))
         );
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        User newTestUserWithDummyUser = new User("dummyUser", "J Jafar", "09876", "", "", "", Collections.emptySet());
+        User newTestUser = new User(testUser.username, "J Jafar", "09876", "", "", "", Collections.emptySet());
+        dao.save(testUser);
+        dao.update(testUser.username, newTestUserWithDummyUser);
+
+        Optional<User> retrievedUser = dao.get(testUser.username);
+
+        assertTrue(retrievedUser.isPresent());
+        assertEquals(newTestUser, retrievedUser.get());
+    }
+
+    @Test(expected = PersistentDataDoesNotExistException.class)
+    public void testUpdateNonExistentUser() throws Exception{
+        dao.update("nonExistantUser", testUser);
     }
 }

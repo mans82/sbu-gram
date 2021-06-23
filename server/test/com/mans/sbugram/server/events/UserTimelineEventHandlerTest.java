@@ -17,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.internal.util.collections.Sets;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -46,9 +47,9 @@ public class UserTimelineEventHandlerTest {
     @Test
     public void testUserTimelineCorrectPredicate() throws Exception {
         Post[] testPosts = {
-                new Post(1, 13, "title1", "content1", "", "jafar"),
-                new Post(2, 12, "title2", "content2", "", "asgar"),
-                new Post(3, 15, "title3", "content3", "", "maar_haye_asgar")
+                new Post(1, 13, "title1", "content1", "", "jafar", Collections.emptySet()),
+                new Post(2, 12, "title2", "content2", "", "asgar", Collections.emptySet()),
+                new Post(3, 15, "title3", "content3", "", "maar_haye_asgar", Collections.emptySet())
         };
 
         @SuppressWarnings("unchecked")

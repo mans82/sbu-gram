@@ -1,8 +1,11 @@
 package com.mans.sbugram.server.dao.impl;
 
+import com.mans.sbugram.models.Comment;
 import com.mans.sbugram.models.Post;
 import com.mans.sbugram.server.dao.Dao;
+import com.mans.sbugram.server.exceptions.PersistentDataDoesNotExistException;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -13,8 +16,10 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class PostDao implements Dao<Post, Integer> {
 
@@ -45,6 +50,7 @@ public class PostDao implements Dao<Post, Integer> {
         String posterUsername;
         boolean isRepost;
         int repostedPostId;
+        Set<Comment> comments;
 
         try {
             postJSONObject = new JSONObject(new JSONTokener(this.getFileReader(queriedPostFilename.get())));
@@ -61,9 +67,15 @@ public class PostDao implements Dao<Post, Integer> {
         isRepost = postJSONObject.getBoolean("isRepost");
         repostedPostId = postJSONObject.getInt("repostedPostId");
 
+        JSONArray commentsJSONArray = postJSONObject.getJSONArray("comments");
+        comments = IntStream.range(0, commentsJSONArray.length())
+                .mapToObj(commentsJSONArray::getJSONObject)
+                .map(commentJSON -> new Comment(commentJSON.getString("username"), commentJSON.getString("text")))
+                .collect(Collectors.toSet());
+
 
         return Optional.of(
-                new Post(postId, postedTime, title, content, photoFilename, posterUsername, isRepost, repostedPostId)
+                new Post(postId, postedTime, title, content, photoFilename, posterUsername, comments, isRepost, repostedPostId)
         );
 
     }
@@ -85,6 +97,34 @@ public class PostDao implements Dao<Post, Integer> {
             fileWriter.close();
         } catch (IOException e) {
             throw new PersistentOperationException(e);
+        }
+    }
+
+    @Override
+    public void update(Integer id, Post newData) throws PersistentOperationException, PersistentDataDoesNotExistException {
+        if (this.get(id).isPresent()) {
+            Post newPost = new Post(
+                    id,
+                    newData.postedTime,
+                    newData.title,
+                    newData.content,
+                    newData.photoFilename,
+                    newData.posterUsername,
+                    newData.comments,
+                    newData.isRepost,
+                    newData.repostedPostId
+            );
+
+            try {
+                Writer fileWriter = this.getFileWriter(Paths.get(this.filesDirectory, id + ".json").toString());
+                newPost.toJSON().write(fileWriter);
+                fileWriter.flush();
+                fileWriter.close();
+            } catch (IOException e) {
+                throw new PersistentOperationException(e);
+            }
+        } else {
+            throw new PersistentDataDoesNotExistException(String.valueOf(id));
         }
     }
 

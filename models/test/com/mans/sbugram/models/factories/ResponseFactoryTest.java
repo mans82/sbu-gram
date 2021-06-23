@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -128,8 +129,8 @@ public class ResponseFactoryTest {
                 true,
                 "some message",
                 Arrays.asList(
-                        new Post(0, 12, "title1", "content1", "", "jafar"),
-                        new Post(1, 14, "title2", "content2", "", "akbar")
+                        new Post(0, 12, "title1", "content1", "", "jafar", Collections.emptySet()),
+                        new Post(1, 14, "title2", "content2", "", "akbar", Collections.emptySet())
                 )
         );
 
@@ -187,5 +188,14 @@ public class ResponseFactoryTest {
                 response,
                 parsedResponse.get()
         );
+    }
+
+    @Test
+    public void testGetResponseAddCommentResponse() {
+        AddCommentResponse response = new AddCommentResponse(true, "some message");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(response.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(response, parsedResponse.get());
     }
 }

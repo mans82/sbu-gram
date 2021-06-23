@@ -1,5 +1,6 @@
 package com.mans.sbugram.models.factories;
 
+import com.mans.sbugram.models.Comment;
 import com.mans.sbugram.models.Post;
 import com.mans.sbugram.models.User;
 import com.mans.sbugram.models.responses.*;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ResponseFactory {
 
@@ -52,6 +54,8 @@ public class ResponseFactory {
                 return Optional.ofNullable(newUserTimelineResponse(successful, message, data));
             case USER_INFO:
                 return Optional.ofNullable(newUserInfoResponse(successful, message, data));
+            case ADD_COMMENT:
+                return Optional.of(newAddCommentResponse(successful, message));
         }
 
         return Optional.empty();
@@ -119,8 +123,14 @@ public class ResponseFactory {
                 boolean isRepost = postJSON.getBoolean("isRepost");
                 int repostedPostId = postJSON.getInt("repostedPostId");
 
+                JSONArray commentsJSONArray = postJSON.getJSONArray("comments");
+                Set<Comment> comments = IntStream.range(0, commentsJSONArray.length())
+                        .mapToObj(commentsJSONArray::getJSONObject)
+                        .map(commentJSON -> new Comment(commentJSON.getString("username"), commentJSON.getString("text")))
+                        .collect(Collectors.toSet());
+
                 timelinePosts.add(
-                        new Post(id, postedTime, title, content, photoFilename, posterUsername, isRepost, repostedPostId)
+                        new Post(id, postedTime, title, content, photoFilename, posterUsername, comments, isRepost, repostedPostId)
                 );
             }
         } catch (JSONException e) {
@@ -168,5 +178,9 @@ public class ResponseFactory {
                 message,
                 new User(username, name, password, city, bio, profilePhotoFilename, followingUsersUsernames)
         );
+    }
+
+    private static AddCommentResponse newAddCommentResponse(boolean successful, String message) {
+        return new AddCommentResponse(successful, message);
     }
 }

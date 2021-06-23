@@ -1,6 +1,7 @@
 package com.mans.sbugram.server.dao.impl;
 
 import com.mans.sbugram.models.UploadedFile;
+import com.mans.sbugram.server.exceptions.PersistentDataDoesNotExistException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,5 +88,21 @@ public class UploadedFileDaoTest {
 
         assertTrue(retrievedFile.isPresent());
         assertEquals(testFile, retrievedFile.get());
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        dao.save(new UploadedFile("data", testBase64Blob));
+        dao.update("data", new UploadedFile("dummyId", "new data"));
+
+        Optional<UploadedFile> retrievedFile = dao.get("data");
+
+        assertTrue(retrievedFile.isPresent());
+        assertEquals("new data", retrievedFile.get().blob);
+    }
+
+    @Test(expected = PersistentDataDoesNotExistException.class)
+    public void testUpdateNonExistentFile() throws Exception {
+        dao.update("nonExistentFile", new UploadedFile("dummyId", testBase64Blob));
     }
 }

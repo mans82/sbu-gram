@@ -2,6 +2,7 @@ package com.mans.sbugram.server.dao.impl;
 
 import com.mans.sbugram.models.User;
 import com.mans.sbugram.server.dao.Dao;
+import com.mans.sbugram.server.exceptions.PersistentDataDoesNotExistException;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -85,6 +86,24 @@ public class UserDao implements Dao<User, String> {
             fileWriter.flush();
         } catch (IOException e) {
             throw new PersistentOperationException(e);
+        }
+    }
+
+    @Override
+    public void update(String id, User newData) throws PersistentOperationException, PersistentDataDoesNotExistException {
+        if (this.get(id).isPresent()) {
+            User userToBeSaved = new User(
+                    id,
+                    newData.name,
+                    newData.password,
+                    newData.city,
+                    newData.bio,
+                    newData.profilePhotoFilename,
+                    newData.followingUsersUsernames
+            );
+            this.save(userToBeSaved);
+        } else {
+            throw new PersistentDataDoesNotExistException(id);
         }
     }
 

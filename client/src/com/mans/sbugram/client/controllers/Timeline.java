@@ -43,8 +43,6 @@ public class Timeline implements Initializable {
         timelinePosts = FXCollections.observableArrayList();
         timelineListView.setItems(timelinePosts);
 
-        timelineListView.setCellFactory(TimelineListCell::new);
-
         profilePhotoImageView.setImage(new Image("/icons/account.png"));
         credentials.addListener((observableValue, oldCredentials, newCredentials) -> {
             if (newCredentials == null) {
@@ -60,6 +58,7 @@ public class Timeline implements Initializable {
                             profilePhotoImageView.setImage(new Image("/icons/error.png"));
                         }
                     }
+                    timelineListView.setCellFactory(postListView -> new TimelineListCell(postListView, credentials.getValue().getKey(), credentials.getValue().getValue()));
                 });
             } catch (IOException e) {
                 e.printStackTrace();

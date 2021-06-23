@@ -1,6 +1,8 @@
 package com.mans.sbugram.server.dao.impl;
 
+import com.mans.sbugram.models.Comment;
 import com.mans.sbugram.models.Post;
+import com.mans.sbugram.server.exceptions.PersistentDataDoesNotExistException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.After;
@@ -13,8 +15,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
 
@@ -46,7 +48,7 @@ public class PostDaoTest {
     public void testGet() throws Exception {
         FileWriter writer = new FileWriter(Paths.get(tempDataDirectory.getAbsolutePath(), "1.json").toFile());
 
-        Post testPost = new Post(1, 123, "title", "content", "", "jafar");
+        Post testPost = new Post(1, 123, "title", "content", "", "jafar", Collections.emptySet());
         testPost.toJSON().write(writer).flush();
 
         Optional<Post> queriedPost = dao.get(1);
@@ -59,7 +61,7 @@ public class PostDaoTest {
     public void testGetNonExistentPost() throws Exception {
         FileWriter writer = new FileWriter(Paths.get(tempDataDirectory.getAbsolutePath(), "1.json").toFile());
 
-        Post testPost = new Post(2, 123, "title", "content", "", "jafar");
+        Post testPost = new Post(2, 123, "title", "content", "", "jafar", Collections.emptySet());
         testPost.toJSON().write(writer).flush();
 
         Optional<Post> post = dao.get(10);
@@ -75,10 +77,14 @@ public class PostDaoTest {
     @Test
     public void testSave() throws Exception {
         dao.save(
-                new Post(3, 123, "title", "content", "", "jafar")
+                new Post(3, 123, "title", "content", "", "jafar",
+                        new HashSet<>(Arrays.asList(
+                                new Comment("asghar", "Salam!"),
+                                new Comment("akbar", "digar nafrestid.")
+                        )))
         );
         dao.save(
-                new Post(300, 456, "title2", "content2", "", "another_jafar")
+                new Post(300, 456, "title2", "content2", "", "another_jafar", Collections.emptySet())
         );
 
         JSONObject savedFileJSON1 = new JSONObject(new JSONTokener(new FileReader(
@@ -92,6 +98,19 @@ public class PostDaoTest {
         assertEquals("", savedFileJSON1.getString("photoFilename"));
         assertEquals("jafar", savedFileJSON1.getString("posterUsername"));
         assertFalse(savedFileJSON1.getBoolean("isRepost"));
+        assertEquals(2, savedFileJSON1.getJSONArray("comments").length());
+        assertTrue(IntStream.range(0, savedFileJSON1.getJSONArray("comments").length())
+             .anyMatch(i -> savedFileJSON1.getJSONArray("comments").
+                     getJSONObject(i).
+                     getString("username")
+                     .equals("asghar"))
+        );
+        assertTrue(IntStream.range(0, savedFileJSON1.getJSONArray("comments").length())
+             .anyMatch(i -> savedFileJSON1.getJSONArray("comments").
+                     getJSONObject(i).
+                     getString("text")
+                     .equals("digar nafrestid."))
+        );
 
         JSONObject savedFileJSON2 = new JSONObject(new JSONTokener(new FileReader(
                 Paths.get(tempDataDirectory.getAbsolutePath(), "1.json").toString()
@@ -103,7 +122,7 @@ public class PostDaoTest {
     @Test
     public void testSaveAndThenGet() throws Exception {
         dao.save(
-                new Post(3, 123, "title", "content", "", "jafar")
+                new Post(3, 123, "title", "content", "", "jafar", Collections.emptySet())
         );
 
         Optional<Post> retrievedPost = dao.get(0);
@@ -114,13 +133,13 @@ public class PostDaoTest {
     @Test
     public void testGetPosts() throws Exception {
         dao.save(
-                new Post(1, 234, "title2", "content2", "", "jafar2")
+                new Post(1, 234, "title2", "content2", "", "jafar2", Collections.emptySet())
         );
         dao.save(
-                new Post(1, 123, "title1", "content1", "", "jafar")
+                new Post(1, 123, "title1", "content1", "", "jafar", Collections.emptySet())
         );
         dao.save(
-                new Post(1, 345, "title3", "content3", "", "jafar3")
+                new Post(1, 345, "title3", "content3", "", "jafar3", Collections.emptySet())
         );
 
         List<Post> filteredPost = dao.getPosts(post -> post.postedTime < 300, 1000);
@@ -131,5 +150,32 @@ public class PostDaoTest {
 
         List<Post> filteredPostEmpty = dao.getPosts(post -> post.title.equals("non existent title"), 1000);
         assertTrue(filteredPostEmpty.isEmpty());
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        dao.save(
+                new Post(1, 123, "title1", "content1", "", "jafar", Collections.emptySet())
+        );
+
+        Post newPost = new Post(
+                0, 333, "new title", "new content", "", "jafar", Collections.emptySet()
+        );
+
+        Post newPostWithDummyId = new Post(
+                3, 333, "new title", "new content", "", "jafar", Collections.emptySet()
+        );
+
+        dao.update(0, newPostWithDummyId);
+
+        Optional<Post> retrievedPost = dao.get(0);
+
+        assertTrue(retrievedPost.isPresent());
+        assertEquals(newPost, retrievedPost.get());
+    }
+
+    @Test(expected = PersistentDataDoesNotExistException.class)
+    public void testUpdateNonExistentPost() throws Exception {
+        dao.update(1000, new Post(1, 123, "title1", "content1", "", "jafar", Collections.emptySet()));
     }
 }

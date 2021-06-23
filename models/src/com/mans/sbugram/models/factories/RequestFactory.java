@@ -46,6 +46,8 @@ public class RequestFactory {
                 return Optional.ofNullable(newUserTimelineRequest(data));
             case USER_INFO:
                 return Optional.ofNullable(newUserInfoRequest(data));
+            case ADD_COMMENT:
+                return Optional.ofNullable(newAddCommentRequest(data));
         }
 
         return Optional.empty();
@@ -134,6 +136,24 @@ public class RequestFactory {
         }
 
         return new UserInfoRequest(username);
+    }
+
+    private static AddCommentRequest newAddCommentRequest(JSONObject data) {
+        String username;
+        String password;
+        int postId;
+        String text;
+
+        try {
+            username = data.getString("username");
+            password = data.getString("password");
+            postId = data.getInt("postId");
+            text = data.getString("text");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new AddCommentRequest(username, password, postId, text);
     }
 
 }

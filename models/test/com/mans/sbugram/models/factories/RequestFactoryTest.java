@@ -152,4 +152,23 @@ public class RequestFactoryTest {
 
         assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
     }
+
+    @Test
+    public void testGetRequestAddCommentRequest() {
+        AddCommentRequest request = new AddCommentRequest("jafar", "1234", 1, "Nice post.");
+        Optional<Request> parsedRequest = RequestFactory.getRequest(request.toJSON());
+
+        assertTrue(parsedRequest.isPresent());
+        assertEquals(
+                request,
+                parsedRequest.get()
+        );
+    }
+
+    @Test
+    public void testGetRequestAddCommentRequestInvalidData() {
+        JSONObject invalidRequest = new JSONObject("{\"request_type\":\"ADD_COMMENT\",\"data\":{\"postId\":1,\"text\":\"Nice post.\",\"username\":\"jafar\"}}");
+
+        assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
+    }
 }
