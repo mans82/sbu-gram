@@ -244,4 +244,24 @@ public class ResponseFactoryTest {
         assertTrue(response.isPresent());
         assertEquals(1, ((UserPostsResponse)response.get()).posts.size());
     }
+
+    @Test
+    public void testGetResponseSetFollowingResponse() {
+        SetFollowingResponse response = new SetFollowingResponse(true, "some message", true);
+
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(response.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(
+                response,
+                parsedResponse.get()
+        );
+    }
+
+    @Test
+    public void testGetResponseSetFollowingInvalidData() {
+        JSONObject invalidResponse = new JSONObject("{\"data\":{},\"response_type\":\"SET_FOLLOWING\",\"message\":\"some message\",\"successful\":true}");
+
+        assertFalse(ResponseFactory.getResponse(invalidResponse).isPresent());
+    }
 }

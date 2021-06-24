@@ -10,4 +10,5 @@ public enum ResponseType {
     ADD_COMMENT,
     SET_LIKE,
     USER_POSTS,
+    SET_FOLLOWING,
 }

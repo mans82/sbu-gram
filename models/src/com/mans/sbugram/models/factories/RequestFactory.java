@@ -52,6 +52,8 @@ public class RequestFactory {
                 return Optional.ofNullable(newSetLikeRequest(data));
             case USER_POSTS:
                 return Optional.ofNullable(newUserPostsRequest(data));
+            case SET_FOLLOWING:
+                return Optional.ofNullable(newSetFollowingRequest(data));
         }
 
         return Optional.empty();
@@ -188,5 +190,23 @@ public class RequestFactory {
         }
 
         return new UserPostsRequest(username);
+    }
+
+    private static SetFollowingRequest newSetFollowingRequest(JSONObject data) {
+        String username;
+        String password;
+        String targetUserUsername;
+        boolean following;
+
+        try {
+            username = data.getString("username");
+            password = data.getString("password");
+            targetUserUsername = data.getString("targetUserUsername");
+            following = data.getBoolean("following");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new SetFollowingRequest(username, password, targetUserUsername, following);
     }
 }

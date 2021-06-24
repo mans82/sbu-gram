@@ -57,6 +57,8 @@ public class ResponseFactory {
                 return Optional.ofNullable(newSetLikeResponse(successful, message, data));
             case USER_POSTS:
                 return Optional.ofNullable(newUserPostsResponse(successful, message, data));
+            case SET_FOLLOWING:
+                return Optional.ofNullable(newSetFollowingResponse(successful,message, data));
         }
 
         return Optional.empty();
@@ -265,5 +267,21 @@ public class ResponseFactory {
                 .collect(Collectors.toList());
 
         return new UserPostsResponse(successful, message, posts);
+    }
+
+    private static SetFollowingResponse newSetFollowingResponse(boolean successful, String message, JSONObject data) {
+        if (data == null) {
+            return null;
+        }
+
+        boolean following;
+
+        try {
+            following = data.getBoolean("following");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new SetFollowingResponse(successful, message, following);
     }
 }

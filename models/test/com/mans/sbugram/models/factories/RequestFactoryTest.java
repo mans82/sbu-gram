@@ -204,8 +204,27 @@ public class RequestFactoryTest {
     }
 
     @Test
-    public void testGetRequestInvalidData() {
+    public void testGetRequestUserPostsRequestInvalidData() {
         JSONObject invalidRequest = new JSONObject("{\"request_type\":\"USER_POSTS\",\"data\":{}}");
+
+        assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
+    }
+
+    @Test
+    public void testGetRequestSetFollowingRequest() {
+        SetFollowingRequest request = new SetFollowingRequest("jafar", "1234", "asghar", true);
+        Optional<Request> parsedRequest = RequestFactory.getRequest(request.toJSON());
+
+        assertTrue(parsedRequest.isPresent());
+        assertEquals(
+                request,
+                parsedRequest.get()
+        );
+    }
+
+    @Test
+    public void testGetRequestSetFollowingRequestInvalidData() {
+        JSONObject invalidRequest = new JSONObject("{\"request_type\":\"SET_FOLLOWING\",\"data\":{\"targetUserUsername\":\"asghar\",\"password\":\"1234\",\"username\":\"jafar\"}}");
 
         assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
     }
