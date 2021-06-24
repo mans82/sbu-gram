@@ -56,6 +56,8 @@ public class ResponseFactory {
                 return Optional.ofNullable(newUserInfoResponse(successful, message, data));
             case ADD_COMMENT:
                 return Optional.of(newAddCommentResponse(successful, message));
+            case SET_LIKE:
+                return Optional.ofNullable(newSetLikeResponse(successful, message, data));
         }
 
         return Optional.empty();
@@ -129,8 +131,14 @@ public class ResponseFactory {
                         .map(commentJSON -> new Comment(commentJSON.getString("username"), commentJSON.getString("text")))
                         .collect(Collectors.toSet());
 
+                JSONArray likedUsersJSONArray = postJSON.getJSONArray("likedUsersUsernames");
+                Set<String> likedUsersUsernames = IntStream.range(0, likedUsersJSONArray.length())
+                        .mapToObj(likedUsersJSONArray::getString)
+                        .collect(Collectors.toSet());
+
+
                 timelinePosts.add(
-                        new Post(id, postedTime, title, content, photoFilename, posterUsername, comments, isRepost, repostedPostId)
+                        new Post(id, postedTime, title, content, photoFilename, posterUsername, comments, isRepost, repostedPostId, likedUsersUsernames)
                 );
             }
         } catch (JSONException e) {
@@ -182,5 +190,21 @@ public class ResponseFactory {
 
     private static AddCommentResponse newAddCommentResponse(boolean successful, String message) {
         return new AddCommentResponse(successful, message);
+    }
+
+    private static SetLikeResponse newSetLikeResponse(boolean successful, String message, JSONObject data) {
+        if (data == null) {
+            return null;
+        }
+
+        boolean liked;
+
+        try {
+            liked = data.getBoolean("liked");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new SetLikeResponse(successful, message, liked);
     }
 }

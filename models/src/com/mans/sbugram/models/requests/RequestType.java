@@ -8,4 +8,5 @@ public enum RequestType {
     USER_TIMELINE,
     USER_INFO,
     ADD_COMMENT,
+    SET_LIKE,
 }

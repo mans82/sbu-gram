@@ -8,4 +8,5 @@ public enum ResponseType {
     USER_TIMELINE,
     USER_INFO,
     ADD_COMMENT,
+    SET_LIKE,
 }

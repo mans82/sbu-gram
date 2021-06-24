@@ -70,8 +70,8 @@ public class AddCommentEventHandler implements EventHandler {
                 queriedPost.get().posterUsername,
                 newComments,
                 queriedPost.get().isRepost,
-                queriedPost.get().repostedPostId
-        );
+                queriedPost.get().repostedPostId,
+                queriedPost.get().likedUsersUsernames);
 
         try {
             postDao.update(queriedPost.get().id, newPost);

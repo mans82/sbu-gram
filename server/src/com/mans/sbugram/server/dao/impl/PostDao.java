@@ -51,6 +51,7 @@ public class PostDao implements Dao<Post, Integer> {
         boolean isRepost;
         int repostedPostId;
         Set<Comment> comments;
+        Set<String> likedUsersUsernames;
 
         try {
             postJSONObject = new JSONObject(new JSONTokener(this.getFileReader(queriedPostFilename.get())));
@@ -73,9 +74,14 @@ public class PostDao implements Dao<Post, Integer> {
                 .map(commentJSON -> new Comment(commentJSON.getString("username"), commentJSON.getString("text")))
                 .collect(Collectors.toSet());
 
+        JSONArray likedUsersJSONArray = postJSONObject.getJSONArray("likedUsersUsernames");
+        likedUsersUsernames = IntStream.range(0, likedUsersJSONArray.length())
+                .mapToObj(likedUsersJSONArray::getString)
+                .collect(Collectors.toSet());
+
 
         return Optional.of(
-                new Post(postId, postedTime, title, content, photoFilename, posterUsername, comments, isRepost, repostedPostId)
+                new Post(postId, postedTime, title, content, photoFilename, posterUsername, comments, isRepost, repostedPostId, likedUsersUsernames)
         );
 
     }
@@ -112,8 +118,8 @@ public class PostDao implements Dao<Post, Integer> {
                     newData.posterUsername,
                     newData.comments,
                     newData.isRepost,
-                    newData.repostedPostId
-            );
+                    newData.repostedPostId,
+                    newData.likedUsersUsernames);
 
             try {
                 Writer fileWriter = this.getFileWriter(Paths.get(this.filesDirectory, id + ".json").toString());

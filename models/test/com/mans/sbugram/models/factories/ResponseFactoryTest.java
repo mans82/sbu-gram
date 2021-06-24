@@ -129,8 +129,8 @@ public class ResponseFactoryTest {
                 true,
                 "some message",
                 Arrays.asList(
-                        new Post(0, 12, "title1", "content1", "", "jafar", Collections.emptySet()),
-                        new Post(1, 14, "title2", "content2", "", "akbar", Collections.emptySet())
+                        new Post(0, 12, "title1", "content1", "", "jafar", Collections.emptySet(), Collections.emptySet()),
+                        new Post(1, 14, "title2", "content2", "", "akbar", Collections.emptySet(), Collections.emptySet())
                 )
         );
 
@@ -197,5 +197,25 @@ public class ResponseFactoryTest {
 
         assertTrue(parsedResponse.isPresent());
         assertEquals(response, parsedResponse.get());
+    }
+
+    @Test
+    public void testGetResponseSetLikeResponse() {
+        SetLikeResponse response = new SetLikeResponse(true, "somemessage", false);
+
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(response.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(
+                response,
+                parsedResponse.get()
+        );
+    }
+
+    @Test
+    public void testGetRequestSetLikeResponseInvalidData() {
+        JSONObject invalidResponse = new JSONObject("{\"data\":{},\"response_type\":\"SET_LIKE\",\"message\":\"somemessage\",\"successful\":true}");
+
+        assertFalse(ResponseFactory.getResponse(invalidResponse).isPresent());
     }
 }

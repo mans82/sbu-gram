@@ -28,7 +28,7 @@ public class AddCommentEventHandlerTest {
     AddCommentEventHandler handler;
 
     User testUser = new User("jafar", "Jafar", "1234", "", "", "", Collections.emptySet());
-    Post testPost = new Post(0, 0, "title", "content", "", "jafar", Collections.emptySet());
+    Post testPost = new Post(0, 0, "title", "content", "", "jafar", Collections.emptySet(), Collections.emptySet());
 
     @Before
     public void setUp() {

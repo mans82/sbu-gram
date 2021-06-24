@@ -171,4 +171,23 @@ public class RequestFactoryTest {
 
         assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
     }
+
+    @Test
+    public void testGetRequestSetLikeRequest() {
+        SetLikeRequest request = new SetLikeRequest("jafar", "1234", 1, true);
+        Optional<Request> parsedRequest = RequestFactory.getRequest(request.toJSON());
+
+        assertTrue(parsedRequest.isPresent());
+        assertEquals(
+                request,
+                parsedRequest.get()
+        );
+    }
+
+    @Test
+    public void testGetRequestSetLikeRequestInvalidData() {
+        JSONObject invalidRequest = new JSONObject("{\"request_type\":\"SET_LIKE\",\"data\":{\"password\":\"1234\",\"liked\":true,\"username\":\"jafar\"}}");
+
+        assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
+    }
 }

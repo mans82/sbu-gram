@@ -23,6 +23,7 @@ public class Main {
         eventManager.addEventHandler(new UserTimelineEventHandler(userDao, postDao));
         eventManager.addEventHandler(new UserInfoEventHandler(userDao));
         eventManager.addEventHandler(new AddCommentEventHandler(userDao, postDao));
+        eventManager.addEventHandler(new SetLikeEventHandler(userDao, postDao));
 
         Server server = new Server(new ServerSocket(8228), eventManager);
         server.start();

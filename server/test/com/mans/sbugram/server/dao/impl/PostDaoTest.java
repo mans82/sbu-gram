@@ -48,7 +48,7 @@ public class PostDaoTest {
     public void testGet() throws Exception {
         FileWriter writer = new FileWriter(Paths.get(tempDataDirectory.getAbsolutePath(), "1.json").toFile());
 
-        Post testPost = new Post(1, 123, "title", "content", "", "jafar", Collections.emptySet());
+        Post testPost = new Post(1, 123, "title", "content", "", "jafar", Collections.emptySet(), Collections.emptySet());
         testPost.toJSON().write(writer).flush();
 
         Optional<Post> queriedPost = dao.get(1);
@@ -61,7 +61,7 @@ public class PostDaoTest {
     public void testGetNonExistentPost() throws Exception {
         FileWriter writer = new FileWriter(Paths.get(tempDataDirectory.getAbsolutePath(), "1.json").toFile());
 
-        Post testPost = new Post(2, 123, "title", "content", "", "jafar", Collections.emptySet());
+        Post testPost = new Post(2, 123, "title", "content", "", "jafar", Collections.emptySet(), Collections.emptySet());
         testPost.toJSON().write(writer).flush();
 
         Optional<Post> post = dao.get(10);
@@ -81,10 +81,10 @@ public class PostDaoTest {
                         new HashSet<>(Arrays.asList(
                                 new Comment("asghar", "Salam!"),
                                 new Comment("akbar", "digar nafrestid.")
-                        )))
+                        )), Collections.emptySet())
         );
         dao.save(
-                new Post(300, 456, "title2", "content2", "", "another_jafar", Collections.emptySet())
+                new Post(300, 456, "title2", "content2", "", "another_jafar", Collections.emptySet(), Collections.emptySet())
         );
 
         JSONObject savedFileJSON1 = new JSONObject(new JSONTokener(new FileReader(
@@ -122,7 +122,7 @@ public class PostDaoTest {
     @Test
     public void testSaveAndThenGet() throws Exception {
         dao.save(
-                new Post(3, 123, "title", "content", "", "jafar", Collections.emptySet())
+                new Post(3, 123, "title", "content", "", "jafar", Collections.emptySet(), Collections.emptySet())
         );
 
         Optional<Post> retrievedPost = dao.get(0);
@@ -133,13 +133,13 @@ public class PostDaoTest {
     @Test
     public void testGetPosts() throws Exception {
         dao.save(
-                new Post(1, 234, "title2", "content2", "", "jafar2", Collections.emptySet())
+                new Post(1, 234, "title2", "content2", "", "jafar2", Collections.emptySet(), Collections.emptySet())
         );
         dao.save(
-                new Post(1, 123, "title1", "content1", "", "jafar", Collections.emptySet())
+                new Post(1, 123, "title1", "content1", "", "jafar", Collections.emptySet(), Collections.emptySet())
         );
         dao.save(
-                new Post(1, 345, "title3", "content3", "", "jafar3", Collections.emptySet())
+                new Post(1, 345, "title3", "content3", "", "jafar3", Collections.emptySet(), Collections.emptySet())
         );
 
         List<Post> filteredPost = dao.getPosts(post -> post.postedTime < 300, 1000);
@@ -155,16 +155,16 @@ public class PostDaoTest {
     @Test
     public void testUpdate() throws Exception {
         dao.save(
-                new Post(1, 123, "title1", "content1", "", "jafar", Collections.emptySet())
+                new Post(1, 123, "title1", "content1", "", "jafar", Collections.emptySet(), Collections.emptySet())
         );
 
         Post newPost = new Post(
-                0, 333, "new title", "new content", "", "jafar", Collections.emptySet()
-        );
+                0, 333, "new title", "new content", "", "jafar", Collections.emptySet(),
+                Collections.emptySet());
 
         Post newPostWithDummyId = new Post(
-                3, 333, "new title", "new content", "", "jafar", Collections.emptySet()
-        );
+                3, 333, "new title", "new content", "", "jafar", Collections.emptySet(),
+                Collections.emptySet());
 
         dao.update(0, newPostWithDummyId);
 
@@ -176,6 +176,6 @@ public class PostDaoTest {
 
     @Test(expected = PersistentDataDoesNotExistException.class)
     public void testUpdateNonExistentPost() throws Exception {
-        dao.update(1000, new Post(1, 123, "title1", "content1", "", "jafar", Collections.emptySet()));
+        dao.update(1000, new Post(1, 123, "title1", "content1", "", "jafar", Collections.emptySet(), Collections.emptySet()));
     }
 }

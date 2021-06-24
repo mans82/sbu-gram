@@ -47,9 +47,9 @@ public class UserTimelineEventHandlerTest {
     @Test
     public void testUserTimelineCorrectPredicate() throws Exception {
         Post[] testPosts = {
-                new Post(1, 13, "title1", "content1", "", "jafar", Collections.emptySet()),
-                new Post(2, 12, "title2", "content2", "", "asgar", Collections.emptySet()),
-                new Post(3, 15, "title3", "content3", "", "maar_haye_asgar", Collections.emptySet())
+                new Post(1, 13, "title1", "content1", "", "jafar", Collections.emptySet(), Collections.emptySet()),
+                new Post(2, 12, "title2", "content2", "", "asgar", Collections.emptySet(), Collections.emptySet()),
+                new Post(3, 15, "title3", "content3", "", "maar_haye_asgar", Collections.emptySet(), Collections.emptySet())
         };
 
         @SuppressWarnings("unchecked")
