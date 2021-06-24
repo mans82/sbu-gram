@@ -213,9 +213,35 @@ public class ResponseFactoryTest {
     }
 
     @Test
-    public void testGetRequestSetLikeResponseInvalidData() {
+    public void testGetResponseSetLikeResponseInvalidData() {
         JSONObject invalidResponse = new JSONObject("{\"data\":{},\"response_type\":\"SET_LIKE\",\"message\":\"somemessage\",\"successful\":true}");
 
         assertFalse(ResponseFactory.getResponse(invalidResponse).isPresent());
+    }
+
+    @Test
+    public void testGetResponseUserPosts() {
+        UserPostsResponse response = new UserPostsResponse(true, "some message", Arrays.asList(
+                new Post(0, 12, "title1", "content1", "", "jafar", Collections.emptySet(), Collections.emptySet()),
+                new Post(1, 14, "title2", "content2", "", "akbar", Collections.emptySet(), Collections.emptySet())
+        ));
+
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(response.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(
+                response,
+                parsedResponse.get()
+        );
+    }
+
+    @Test
+    public void testGetResponseUserPostsInvalidData() {
+        JSONObject invalidResponseJSON = new JSONObject("{\"data\":{\"posts\":[{\"comments\":[],\"isRepost\":false,\"postedTime\":12,\"id\":0,\"title\":\"title1\",\"likedUsersUsernames\":[],\"content\":\"content1\",\"posterUsername\":\"jafar\",\"repostedPostId\":-1},{\"photoFilename\":\"\",\"comments\":[],\"isRepost\":false,\"postedTime\":14,\"id\":1,\"title\":\"title2\",\"likedUsersUsernames\":[],\"content\":\"content2\",\"posterUsername\":\"akbar\",\"repostedPostId\":-1}]},\"response_type\":\"USER_POSTS\",\"message\":\"some message\",\"successful\":true}");
+
+        Optional<Response> response = ResponseFactory.getResponse(invalidResponseJSON);
+
+        assertTrue(response.isPresent());
+        assertEquals(1, ((UserPostsResponse)response.get()).posts.size());
     }
 }

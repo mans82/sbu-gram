@@ -24,6 +24,7 @@ public class Main {
         eventManager.addEventHandler(new UserInfoEventHandler(userDao));
         eventManager.addEventHandler(new AddCommentEventHandler(userDao, postDao));
         eventManager.addEventHandler(new SetLikeEventHandler(userDao, postDao));
+        eventManager.addEventHandler(new UserPostsEventHandler(userDao, postDao));
 
         Server server = new Server(new ServerSocket(8228), eventManager);
         server.start();

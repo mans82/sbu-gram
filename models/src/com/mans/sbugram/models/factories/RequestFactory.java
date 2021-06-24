@@ -50,6 +50,8 @@ public class RequestFactory {
                 return Optional.ofNullable(newAddCommentRequest(data));
             case SET_LIKE:
                 return Optional.ofNullable(newSetLikeRequest(data));
+            case USER_POSTS:
+                return Optional.ofNullable(newUserPostsRequest(data));
         }
 
         return Optional.empty();
@@ -158,7 +160,6 @@ public class RequestFactory {
         return new AddCommentRequest(username, password, postId, text);
     }
 
-
     private static SetLikeRequest newSetLikeRequest(JSONObject data) {
         String username;
         String password;
@@ -175,5 +176,17 @@ public class RequestFactory {
         }
 
         return new SetLikeRequest(username, password, postId, liked);
+    }
+
+    private static UserPostsRequest newUserPostsRequest(JSONObject data) {
+        String username;
+
+        try {
+            username = data.getString("username");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new UserPostsRequest(username);
     }
 }

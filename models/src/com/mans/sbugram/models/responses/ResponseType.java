@@ -9,4 +9,5 @@ public enum ResponseType {
     USER_INFO,
     ADD_COMMENT,
     SET_LIKE,
+    USER_POSTS,
 }

@@ -8,10 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -58,6 +55,8 @@ public class ResponseFactory {
                 return Optional.of(newAddCommentResponse(successful, message));
             case SET_LIKE:
                 return Optional.ofNullable(newSetLikeResponse(successful, message, data));
+            case USER_POSTS:
+                return Optional.ofNullable(newUserPostsResponse(successful, message, data));
         }
 
         return Optional.empty();
@@ -206,5 +205,65 @@ public class ResponseFactory {
         }
 
         return new SetLikeResponse(successful, message, liked);
+    }
+
+    private static UserPostsResponse newUserPostsResponse(boolean successful, String message, JSONObject data) {
+        if (data == null) {
+            return null;
+        }
+
+        List<Post> posts;
+        JSONArray postsJSONArray;
+
+        try {
+            postsJSONArray = data.getJSONArray("posts");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        posts = IntStream.range(0, postsJSONArray.length())
+                .mapToObj(postsJSONArray::getJSONObject)
+                .map(postJSONObject -> {
+                    try {
+                        JSONArray commentsJSONArray = postJSONObject.getJSONArray("comments");
+                        Set<Comment> comments = IntStream.range(0, commentsJSONArray.length())
+                                .mapToObj(commentsJSONArray::getJSONObject)
+                                .map(commentJSONObject -> {
+                                    try {
+                                        return new Comment(
+                                                commentJSONObject.getString("username"),
+                                                commentJSONObject.getString("text")
+                                        );
+                                    } catch (JSONException e) {
+                                        return null;
+                                    }
+                                })
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toSet());
+
+                        Set<String> likedUsersUsernames = postJSONObject.getJSONArray("likedUsersUsernames").toList().stream()
+                            .map(String::valueOf)
+                            .collect(Collectors.toSet());
+
+                        return new Post(
+                                postJSONObject.getInt("id"),
+                                postJSONObject.getLong("postedTime"),
+                                postJSONObject.getString("title"),
+                                postJSONObject.getString("content"),
+                                postJSONObject.getString("photoFilename"),
+                                postJSONObject.getString("posterUsername"),
+                                comments,
+                                postJSONObject.getBoolean("isRepost"),
+                                postJSONObject.getInt("repostedPostId"),
+                                likedUsersUsernames
+                        );
+                    } catch (JSONException e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        return new UserPostsResponse(successful, message, posts);
     }
 }
