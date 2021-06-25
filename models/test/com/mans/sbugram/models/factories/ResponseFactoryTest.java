@@ -237,7 +237,7 @@ public class ResponseFactoryTest {
 
     @Test
     public void testGetResponseUserPostsInvalidData() {
-        JSONObject invalidResponseJSON = new JSONObject("{\"data\":{\"posts\":[{\"comments\":[],\"isRepost\":false,\"postedTime\":12,\"id\":0,\"title\":\"title1\",\"likedUsersUsernames\":[],\"content\":\"content1\",\"posterUsername\":\"jafar\",\"repostedPostId\":-1},{\"photoFilename\":\"\",\"comments\":[],\"isRepost\":false,\"postedTime\":14,\"id\":1,\"title\":\"title2\",\"likedUsersUsernames\":[],\"content\":\"content2\",\"posterUsername\":\"akbar\",\"repostedPostId\":-1}]},\"response_type\":\"USER_POSTS\",\"message\":\"some message\",\"successful\":true}");
+        JSONObject invalidResponseJSON = new JSONObject("{\"data\":{\"posts\":[{\"photoFilename\":\"\",\"comments\":[],\"isRepost\":false,\"postedTime\":12,\"id\":0,\"title\":\"title1\",\"likedUsersUsernames\":[],\"content\":\"content1\",\"posterUsername\":\"jafar\"},{\"photoFilename\":\"\",\"originalPosterUsername\":\"\",\"comments\":[],\"isRepost\":false,\"postedTime\":14,\"id\":1,\"title\":\"title2\",\"likedUsersUsernames\":[],\"content\":\"content2\",\"posterUsername\":\"akbar\"}]},\"response_type\":\"USER_POSTS\",\"message\":\"some message\",\"successful\":true}");
 
         Optional<Response> response = ResponseFactory.getResponse(invalidResponseJSON);
 
@@ -269,5 +269,23 @@ public class ResponseFactoryTest {
     public void testGetResponseSendPostResponse() {
         SendPostResponse response = new SendPostResponse(true, "some message");
         Optional<Response> parsedResponse = ResponseFactory.getResponse(response.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(
+                response,
+                parsedResponse.get()
+        );
+    }
+
+    @Test
+    public void testGetResponseRepostResponse() {
+        RepostResponse response = new RepostResponse(true, "some message");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(response.toJSON());
+
+        assertTrue(parsedResponse.isPresent());
+        assertEquals(
+                response,
+                parsedResponse.get()
+        );
     }
 }

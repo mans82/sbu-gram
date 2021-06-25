@@ -49,7 +49,7 @@ public class PostDao implements Dao<Post, Integer> {
         String photoFilename;
         String posterUsername;
         boolean isRepost;
-        int repostedPostId;
+        String originalPosterUsername;
         Set<Comment> comments;
         Set<String> likedUsersUsernames;
 
@@ -66,7 +66,7 @@ public class PostDao implements Dao<Post, Integer> {
         photoFilename = postJSONObject.getString("photoFilename");
         posterUsername = postJSONObject.getString("posterUsername");
         isRepost = postJSONObject.getBoolean("isRepost");
-        repostedPostId = postJSONObject.getInt("repostedPostId");
+        originalPosterUsername = postJSONObject.getString("originalPosterUsername");
 
         JSONArray commentsJSONArray = postJSONObject.getJSONArray("comments");
         comments = IntStream.range(0, commentsJSONArray.length())
@@ -81,7 +81,7 @@ public class PostDao implements Dao<Post, Integer> {
 
 
         return Optional.of(
-                new Post(postId, postedTime, title, content, photoFilename, posterUsername, comments, isRepost, repostedPostId, likedUsersUsernames)
+                new Post(postId, postedTime, title, content, photoFilename, posterUsername, comments, isRepost, originalPosterUsername, likedUsersUsernames)
         );
 
     }
@@ -118,7 +118,7 @@ public class PostDao implements Dao<Post, Integer> {
                     newData.posterUsername,
                     newData.comments,
                     newData.isRepost,
-                    newData.repostedPostId,
+                    newData.originalPosterUsername,
                     newData.likedUsersUsernames);
 
             try {

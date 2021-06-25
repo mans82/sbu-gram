@@ -57,6 +57,8 @@ public class RequestFactory {
                 return Optional.ofNullable(newSetFollowingRequest(data));
             case SEND_POST:
                 return Optional.ofNullable(newSendPostRequest(data));
+            case REPOST:
+                return Optional.ofNullable(newRepostRequest(data));
         }
 
         return Optional.empty();
@@ -239,5 +241,21 @@ public class RequestFactory {
         }
 
         return new SendPostRequest(username, password, post);
+    }
+
+    private static RepostRequest newRepostRequest(JSONObject data) {
+        String username;
+        String password;
+        int repostedPostId;
+
+        try {
+            username = data.getString("username");
+            password = data.getString("password");
+            repostedPostId = data.getInt("repostedPostId");
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new RepostRequest(username, password, repostedPostId);
     }
 }

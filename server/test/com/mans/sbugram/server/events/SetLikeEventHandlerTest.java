@@ -102,7 +102,7 @@ public class SetLikeEventHandlerTest {
                         testPost.posterUsername,
                         testPost.comments,
                         testPost.isRepost,
-                        testPost.repostedPostId,
+                        testPost.originalPosterUsername,
                         Collections.singleton(testUser.username)
                 )));
 

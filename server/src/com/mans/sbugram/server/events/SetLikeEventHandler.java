@@ -73,7 +73,7 @@ public class SetLikeEventHandler implements EventHandler {
                 queriedPost.posterUsername,
                 queriedPost.comments,
                 queriedPost.isRepost,
-                queriedPost.repostedPostId,
+                queriedPost.originalPosterUsername,
                 newLikedUsersUsernames
         );
 

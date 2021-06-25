@@ -12,4 +12,5 @@ public enum ResponseType {
     USER_POSTS,
     SET_FOLLOWING,
     SEND_POST,
+    REPOST,
 }

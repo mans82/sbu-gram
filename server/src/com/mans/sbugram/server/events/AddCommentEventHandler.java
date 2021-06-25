@@ -70,7 +70,7 @@ public class AddCommentEventHandler implements EventHandler {
                 queriedPost.get().posterUsername,
                 newComments,
                 queriedPost.get().isRepost,
-                queriedPost.get().repostedPostId,
+                queriedPost.get().originalPosterUsername,
                 queriedPost.get().likedUsersUsernames);
 
         try {

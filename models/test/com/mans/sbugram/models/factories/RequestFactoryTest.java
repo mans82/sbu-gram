@@ -253,4 +253,23 @@ public class RequestFactoryTest {
         assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
     }
 
+    @Test
+    public void testGetRequestRepostRequest() {
+        RepostRequest request = new RepostRequest("jafar", "1234", 11);
+        Optional<Request> parsedRequest = RequestFactory.getRequest(request.toJSON());
+
+        assertTrue(parsedRequest.isPresent());
+        assertEquals(
+                request,
+                parsedRequest.get()
+        );
+    }
+
+    @Test
+    public void testGetRequestRepostRequestInvalidData() {
+        JSONObject invalidRequest = new JSONObject("{\"request_type\":\"REPOST\",\"data\":{\"repostedPostId\":11,\"username\":\"jafar\"}}");
+
+        assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
+    }
+
 }
