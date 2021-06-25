@@ -10,15 +10,20 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Pair;
 
 import java.io.IOException;
@@ -33,6 +38,8 @@ public class Timeline implements Initializable {
     public ImageView profilePhotoImageView;
     public Button refreshButton;
     public ListView<Post> timelineListView;
+    public HBox buttonsHBox;
+    public Button newPostButton;
 
     private ObservableList<Post> timelinePosts;
 
@@ -115,5 +122,23 @@ public class Timeline implements Initializable {
         new Thread(timelineRequestTask).start();
         this.refreshButton.setText("Refreshing...");
         this.refreshButton.setDisable(true);
+    }
+
+    public void onNewPostButtonAction() throws Exception {
+        Stage newPostStage = new Stage(StageStyle.UTILITY);
+        newPostStage.setTitle("New post - SBUGram");
+        newPostStage.setResizable(false);
+
+        FXMLLoader newPostLoader = new FXMLLoader(getClass().getResource("/views/NewPost.fxml"));
+        Scene newPostScene = new Scene(newPostLoader.load());
+
+        NewPost newPostController = newPostLoader.getController();
+
+        newPostController.setCurrentStage(newPostStage);
+        newPostController.setUsername(this.credentials.getValue().getKey());
+        newPostController.setPassword(this.credentials.getValue().getValue());
+
+        newPostStage.setScene(newPostScene);
+        newPostStage.showAndWait();
     }
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox fx:id="rootVBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" spacing="10.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mans.sbugram.client.controllers.NewPost">
+   <children>
+      <TextField fx:id="titleTextField" promptText="Post title">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </TextField>
+      <TextArea fx:id="postContentTextArea" prefHeight="200.0" prefWidth="200.0" promptText="Post content" wrapText="true" />
+      <TitledPane collapsible="false" text="Add photo">
+         <content>
+            <HBox fx:id="photoHBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Button fx:id="choosePhotoButton" mnemonicParsing="false" onAction="#onChoosePhotoButtonAction" text="Choose Photo...">
+                     <HBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <ImageView fx:id="postPhotoImageView" fitHeight="162.0" fitWidth="387.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+         </content>
+      </TitledPane>
+      <HBox fx:id="footerButtonsHBox" alignment="CENTER_RIGHT" spacing="5.0">
+         <children>
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onCancelButtonAction" text="Cancel" />
+            <Button fx:id="sendButton" mnemonicParsing="false" onAction="#onSendPostButtonAction" text="Send Post" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

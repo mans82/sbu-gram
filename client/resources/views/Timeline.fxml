@@ -7,6 +7,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -16,8 +17,8 @@
       <GridPane fx:id="headerGridPane" prefHeight="100.0" prefWidth="800.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="394.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="716.0" minWidth="10.0" prefWidth="569.0" />
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="716.0" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="716.0" minWidth="10.0" prefWidth="514.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="716.0" minWidth="10.0" prefWidth="182.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -36,7 +37,12 @@
                   <Insets bottom="20.0" right="20.0" top="20.0" />
                </GridPane.margin>
             </Label>
-            <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#onRefreshButtonAction" text="Refresh" GridPane.columnIndex="2" />
+            <HBox fx:id="buttonsHBox" alignment="CENTER" spacing="5.0" GridPane.columnIndex="2">
+               <children>
+                  <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#onRefreshButtonAction" text="Refresh" />
+                  <Button fx:id="newPostButton" mnemonicParsing="false" onAction="#onNewPostButtonAction" text="New Post" />
+               </children>
+            </HBox>
          </children>
       </GridPane>
       <ListView fx:id="timelineListView" prefHeight="500.0" prefWidth="800.0" />
