@@ -23,7 +23,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Pair;
 
 import java.io.IOException;
@@ -40,6 +39,7 @@ public class Timeline implements Initializable {
     public ListView<Post> timelineListView;
     public HBox buttonsHBox;
     public Button newPostButton;
+    public Button myProfileButton;
 
     private ObservableList<Post> timelinePosts;
 
@@ -125,9 +125,10 @@ public class Timeline implements Initializable {
     }
 
     public void onNewPostButtonAction() throws Exception {
-        Stage newPostStage = new Stage(StageStyle.UTILITY);
+        Stage newPostStage = new Stage();
         newPostStage.setTitle("New post - SBUGram");
         newPostStage.setResizable(false);
+        newPostStage.initModality(Modality.APPLICATION_MODAL);
 
         FXMLLoader newPostLoader = new FXMLLoader(getClass().getResource("/views/NewPost.fxml"));
         Scene newPostScene = new Scene(newPostLoader.load());
@@ -139,6 +140,31 @@ public class Timeline implements Initializable {
         newPostController.setPassword(this.credentials.getValue().getValue());
 
         newPostStage.setScene(newPostScene);
-        newPostStage.showAndWait();
+        newPostStage.show();
+    }
+
+    public void myProfileButtonAction() {
+        Stage profilePageStage = new Stage();
+        profilePageStage.initModality(Modality.APPLICATION_MODAL);
+        profilePageStage.setTitle("Profile - SBUGram");
+        profilePageStage.setResizable(false);
+
+        FXMLLoader profilePageLoader = new FXMLLoader(getClass().getResource("/views/ProfilePage.fxml"));
+        Scene profilePageScene;
+
+        try {
+            profilePageScene = new Scene(profilePageLoader.load());
+        } catch (IOException e) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Cannot open profile page");
+            errorAlert.initModality(Modality.APPLICATION_MODAL);
+            errorAlert.showAndWait();
+            return;
+        }
+
+        ((ProfilePage) profilePageLoader.getController()).setCredentials(this.credentials.getValue().getKey(), this.credentials.getValue().getKey(), this.credentials.getValue().getValue());
+
+        profilePageStage.setScene(profilePageScene);
+        profilePageStage.showAndWait();
     }
 }

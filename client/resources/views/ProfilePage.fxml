@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="rootVBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mans.sbugram.client.controllers.ProfilePage">
+   <children>
+      <HBox fx:id="profileHeaderHBox" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <ImageView fx:id="profilePhotoImageView" fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </HBox.margin>
+               <image>
+                  <Image url="@/icons/account.png" />
+               </image>
+            </ImageView>
+            <VBox fx:id="userTextInfoVBox" alignment="CENTER_LEFT" spacing="5.0">
+               <children>
+                  <Label fx:id="nameLabel" text="Name">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="usernameLabel" opacity="0.7" text="\@username" />
+                  <Label fx:id="cityLabel" text="JafarAbad" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <ListView fx:id="postsListView" prefHeight="300.0" prefWidth="600.0" />
+   </children>
+</VBox>
