@@ -1,5 +1,6 @@
 package com.mans.sbugram.models.factories;
 
+import com.mans.sbugram.models.Post;
 import com.mans.sbugram.models.User;
 import com.mans.sbugram.models.requests.*;
 import org.json.JSONObject;
@@ -229,5 +230,27 @@ public class RequestFactoryTest {
         assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
     }
 
+    @Test
+    public void testGetRequestSendPostRequest() {
+        SendPostRequest request = new SendPostRequest(
+                "jafar",
+                "1234",
+                new Post(33, 33, "title", "content", "", "dummyuser", Collections.emptySet(), Collections.emptySet())
+        );
+        Optional<Request> parsedRequest = RequestFactory.getRequest(request.toJSON());
+
+        assertTrue(parsedRequest.isPresent());
+
+        SendPostRequest parsedSendPostRequest = (SendPostRequest) parsedRequest.get();
+
+        assertEquals("jafar", parsedSendPostRequest.post.posterUsername);
+    }
+
+    @Test
+    public void testGetRequestSendPostRequestInvalidData() {
+        JSONObject invalidRequest = new JSONObject("{\"request_type\":\"SEND_POST\",\"data\":{\"password\":\"1234\",\"post\":{\"comments\":[],\"isRepost\":false,\"postedTime\":33,\"id\":33,\"title\":\"title\",\"likedUsersUsernames\":[],\"content\":\"content\",\"posterUsername\":\"dummyuser\",\"repostedPostId\":-1},\"username\":\"jafar\"}}");
+
+        assertFalse(RequestFactory.getRequest(invalidRequest).isPresent());
+    }
 
 }

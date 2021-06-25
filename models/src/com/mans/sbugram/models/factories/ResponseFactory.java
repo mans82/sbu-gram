@@ -58,7 +58,11 @@ public class ResponseFactory {
             case USER_POSTS:
                 return Optional.ofNullable(newUserPostsResponse(successful, message, data));
             case SET_FOLLOWING:
-                return Optional.ofNullable(newSetFollowingResponse(successful,message, data));
+                return Optional.ofNullable(newSetFollowingResponse(successful, message, data));
+            case SEND_POST:
+                return Optional.of(newSendPostResponse(successful, message));
+            case REPOST:
+                return Optional.of(newRepostResponse(successful, message));
         }
 
         return Optional.empty();
@@ -124,7 +128,7 @@ public class ResponseFactory {
                 String photoFilename = postJSON.getString("photoFilename");
                 String posterUsername = postJSON.getString("posterUsername");
                 boolean isRepost = postJSON.getBoolean("isRepost");
-                int repostedPostId = postJSON.getInt("repostedPostId");
+                String originalPosterUsername = postJSON.getString("originalPosterUsername");
 
                 JSONArray commentsJSONArray = postJSON.getJSONArray("comments");
                 Set<Comment> comments = IntStream.range(0, commentsJSONArray.length())
@@ -139,7 +143,7 @@ public class ResponseFactory {
 
 
                 timelinePosts.add(
-                        new Post(id, postedTime, title, content, photoFilename, posterUsername, comments, isRepost, repostedPostId, likedUsersUsernames)
+                        new Post(id, postedTime, title, content, photoFilename, posterUsername, comments, isRepost, originalPosterUsername, likedUsersUsernames)
                 );
             }
         } catch (JSONException e) {
@@ -256,7 +260,7 @@ public class ResponseFactory {
                                 postJSONObject.getString("posterUsername"),
                                 comments,
                                 postJSONObject.getBoolean("isRepost"),
-                                postJSONObject.getInt("repostedPostId"),
+                                postJSONObject.getString("originalPosterUsername"),
                                 likedUsersUsernames
                         );
                     } catch (JSONException e) {
@@ -283,5 +287,13 @@ public class ResponseFactory {
         }
 
         return new SetFollowingResponse(successful, message, following);
+    }
+
+    private static SendPostResponse newSendPostResponse(boolean successful, String message) {
+        return new SendPostResponse(successful, message);
+    }
+
+    private static RepostResponse newRepostResponse(boolean successful, String message) {
+        return new RepostResponse(successful, message);
     }
 }

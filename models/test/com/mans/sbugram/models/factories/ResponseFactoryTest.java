@@ -264,4 +264,10 @@ public class ResponseFactoryTest {
 
         assertFalse(ResponseFactory.getResponse(invalidResponse).isPresent());
     }
+
+    @Test
+    public void testGetResponseSendPostResponse() {
+        SendPostResponse response = new SendPostResponse(true, "some message");
+        Optional<Response> parsedResponse = ResponseFactory.getResponse(response.toJSON());
+    }
 }

@@ -1,5 +1,6 @@
 package com.mans.sbugram.models.factories;
 
+import com.mans.sbugram.models.Post;
 import com.mans.sbugram.models.User;
 import com.mans.sbugram.models.requests.*;
 import org.json.JSONException;
@@ -54,6 +55,8 @@ public class RequestFactory {
                 return Optional.ofNullable(newUserPostsRequest(data));
             case SET_FOLLOWING:
                 return Optional.ofNullable(newSetFollowingRequest(data));
+            case SEND_POST:
+                return Optional.ofNullable(newSendPostRequest(data));
         }
 
         return Optional.empty();
@@ -208,5 +211,33 @@ public class RequestFactory {
         }
 
         return new SetFollowingRequest(username, password, targetUserUsername, following);
+    }
+
+    private static SendPostRequest newSendPostRequest(JSONObject data) {
+        String username;
+        String password;
+        Post post;
+
+        try {
+            username = data.getString("username");
+            password = data.getString("password");
+
+            JSONObject postJSONObject = data.getJSONObject("post");
+
+            post = new Post(
+                    postJSONObject.getInt("id"),
+                    postJSONObject.getLong("postedTime"),
+                    postJSONObject.getString("title"),
+                    postJSONObject.getString("content"),
+                    postJSONObject.getString("photoFilename"),
+                    username,
+                    Collections.emptySet(),
+                    Collections.emptySet()
+            );
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return new SendPostRequest(username, password, post);
     }
 }
