@@ -11,7 +11,7 @@
 
 <VBox fx:id="rootVBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mans.sbugram.client.controllers.ProfilePage">
    <children>
-      <HBox fx:id="profileHeaderHBox" prefHeight="100.0" prefWidth="200.0">
+      <HBox fx:id="profileHeaderHBox" prefWidth="200.0">
          <children>
             <ImageView fx:id="profilePhotoImageView" fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
@@ -29,8 +29,20 @@
                      </font>
                   </Label>
                   <Label fx:id="usernameLabel" opacity="0.7" text="\@username" />
-                  <Label fx:id="cityLabel" text="JafarAbad" />
+                  <Label fx:id="cityLabel" text="City">
+                     <graphic>
+                        <ImageView fx:id="cityIconImageView" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/icons/city.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <Label fx:id="bioLabel" text="Bio" />
                </children>
+               <HBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </HBox.margin>
             </VBox>
          </children>
       </HBox>

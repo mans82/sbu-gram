@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -29,14 +30,27 @@
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </GridPane.margin>
             </ImageView>
-            <Label text="SBUGram" GridPane.columnIndex="1">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
+            <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets bottom="20.0" right="20.0" top="20.0" />
                </GridPane.margin>
-            </Label>
+               <children>
+                  <Label text="SBUGram">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="gotoTextField" prefHeight="27.0" prefWidth="177.0" promptText="Go to username...">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="goButton" mnemonicParsing="false" onAction="#onGoButtonAction" text="Go" />
+               </children>
+            </HBox>
             <HBox fx:id="buttonsHBox" alignment="CENTER" spacing="5.0" GridPane.columnIndex="2">
                <children>
                   <Button fx:id="myProfileButton" mnemonicParsing="false" onAction="#myProfileButtonAction" text="My Profile" />

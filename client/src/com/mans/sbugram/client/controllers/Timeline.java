@@ -10,12 +10,14 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -40,6 +42,8 @@ public class Timeline implements Initializable {
     public HBox buttonsHBox;
     public Button newPostButton;
     public Button myProfileButton;
+    public TextField gotoTextField;
+    public Button goButton;
 
     private ObservableList<Post> timelinePosts;
 
@@ -164,6 +168,34 @@ public class Timeline implements Initializable {
 
         ((ProfilePage) profilePageLoader.getController()).setCredentials(this.credentials.getValue().getKey(), this.credentials.getValue().getKey(), this.credentials.getValue().getValue());
 
+        profilePageStage.setScene(profilePageScene);
+        profilePageStage.showAndWait();
+    }
+
+    public void onGoButtonAction(ActionEvent actionEvent) {
+        if (this.gotoTextField.getText().isEmpty()) {
+            return;
+        }
+
+        Stage profilePageStage = new Stage();
+        profilePageStage.initModality(Modality.APPLICATION_MODAL);
+        profilePageStage.setTitle("Profile - SBUGram");
+        profilePageStage.setResizable(false);
+
+        FXMLLoader profilePageLoader = new FXMLLoader(getClass().getResource("/views/ProfilePage.fxml"));
+        Scene profilePageScene;
+
+        try {
+            profilePageScene = new Scene(profilePageLoader.load());
+        } catch (IOException e) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Cannot open profile page");
+            errorAlert.initModality(Modality.APPLICATION_MODAL);
+            errorAlert.showAndWait();
+            return;
+        }
+
+        ((ProfilePage) profilePageLoader.getController()).setCredentials(this.gotoTextField.getText(), this.credentials.getValue().getKey(), this.credentials.getValue().getValue());
         profilePageStage.setScene(profilePageScene);
         profilePageStage.showAndWait();
     }
