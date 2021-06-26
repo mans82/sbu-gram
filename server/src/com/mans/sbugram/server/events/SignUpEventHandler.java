@@ -9,6 +9,8 @@ import com.mans.sbugram.models.requests.SignUpRequest;
 import com.mans.sbugram.models.responses.Response;
 import com.mans.sbugram.models.responses.SignUpResponse;
 
+import java.time.Instant;
+
 public class SignUpEventHandler implements EventHandler{
 
     private final UserDao dao;
@@ -39,6 +41,13 @@ public class SignUpEventHandler implements EventHandler{
             }
 
             dao.save(signUpRequest.user);
+
+            System.out.printf(
+                    "%s signed up\nProfile Image: %s\nTime: %s\n\n",
+                    signUpRequest.user.username,
+                    signUpRequest.user.profilePhotoFilename.isEmpty() ? "<none>" : signUpRequest.user.profilePhotoFilename,
+                    this.formatDate(Instant.now())
+            );
             return new SignUpResponse(true, "");
         } catch (PersistentOperationException e) {
             return new SignUpResponse(false, "Server error");

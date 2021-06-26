@@ -75,6 +75,13 @@ public class RepostEventHandler implements EventHandler {
             return new RepostResponse(false, "Server error");
         }
 
+        System.out.printf(
+                "%s reposted\nMessage: %s %s\nTime: %s\n\n",
+                newPost.posterUsername,
+                newPost.originalPosterUsername,
+                newPost.title,
+                this.formatDate(Instant.now())
+        );
         return new RepostResponse(true, "");
     }
 

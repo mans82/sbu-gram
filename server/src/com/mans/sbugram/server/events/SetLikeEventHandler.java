@@ -13,6 +13,7 @@ import com.mans.sbugram.server.exceptions.PersistentDataDoesNotExistException;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -85,7 +86,17 @@ public class SetLikeEventHandler implements EventHandler {
             return new SetLikeResponse(false, "Post not found", false);
         }
 
-        return new SetLikeResponse(true, "", newLikedUsersUsernames.contains(queriedUser.username));
+        boolean liked = newLikedUsersUsernames.contains(queriedUser.username);
+
+        System.out.printf(
+                "%s liked\nMessage: %s %s\nTime: %s\n\n",
+                setLikeRequest.username,
+                queriedPost.posterUsername,
+                queriedPost.title,
+                this.formatDate(Instant.now())
+        );
+
+        return new SetLikeResponse(true, "", liked);
     }
 
     @Override

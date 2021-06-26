@@ -12,6 +12,7 @@ import com.mans.sbugram.server.dao.impl.UserDao;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -62,6 +63,14 @@ public class SendPostEventHandler implements EventHandler {
             return new SendPostResponse(false, "Server error");
         }
 
+        System.out.printf(
+                "%s published\nMessage: %s %s %s\nTime: %s\n\n",
+                sentPost.posterUsername,
+                sentPost.title,
+                sentPost.photoFilename,
+                sentPost.posterUsername,
+                this.formatDate(Instant.now())
+        );
         return new SendPostResponse(true, "");
     }
 

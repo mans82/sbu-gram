@@ -12,6 +12,7 @@ import com.mans.sbugram.server.dao.impl.UserDao;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,11 @@ public class UserTimelineEventHandler implements EventHandler {
                 userTimelineRequest.count
         );
 
+        System.out.printf(
+                "%s requested timeline\nTime: %s\n\n",
+                userTimelineRequest.username,
+                this.formatDate(Instant.now())
+        );
         return new UserTimelineResponse(true, "", timelinePosts);
     }
 

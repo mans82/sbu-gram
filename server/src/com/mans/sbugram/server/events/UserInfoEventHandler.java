@@ -10,6 +10,7 @@ import com.mans.sbugram.server.dao.impl.UserDao;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.Set;
 
@@ -49,6 +50,13 @@ public class UserInfoEventHandler implements EventHandler {
             profilePhotoFilename = queriedUser.profilePhotoFilename;
             followingUsersUsernames = queriedUser.followingUsersUsernames;
 
+            System.out.printf(
+                    "info of %s requested\nMessage %s %s\nTime: %s\n\n",
+                    userInfoRequest.username,
+                    username,
+                    profilePhotoFilename.isEmpty() ? "<none>" : profilePhotoFilename,
+                    this.formatDate(Instant.now())
+            );
             return new UserInfoResponse(
                     true,
                     "",

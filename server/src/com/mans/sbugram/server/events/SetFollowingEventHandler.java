@@ -11,6 +11,7 @@ import com.mans.sbugram.server.exceptions.PersistentDataDoesNotExistException;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -84,7 +85,16 @@ public class SetFollowingEventHandler implements EventHandler{
             return new SetFollowingResponse(false, "User info not found", false);
         }
 
-        return new SetFollowingResponse(true, "", newFollowingUsersUsernames.contains(queriedFollowedUser.username));
+        boolean following = newFollowingUsersUsernames.contains(queriedFollowedUser.username);
+
+        System.out.printf(
+                "%s %s\nMessage: %s\nTime: %s\n\n",
+                setFollowingRequest.username,
+                following ? "followed" : "unfollowed",
+                setFollowingRequest.targetUserUsername,
+                this.formatDate(Instant.now())
+        );
+        return new SetFollowingResponse(true, "", following);
     }
 
     @Override

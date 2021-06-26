@@ -12,6 +12,7 @@ import com.mans.sbugram.server.dao.impl.UserDao;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +49,11 @@ public class UserPostsEventHandler implements EventHandler {
 
         List<Post> queriedPosts = postDao.getPosts(post -> post.posterUsername.equals(queriedUser.username), 100);
 
+        System.out.printf(
+                "%s posts requested\nTime: %s\n\n",
+                userPostsRequest.username,
+                this.formatDate(Instant.now())
+        );
         return new UserPostsResponse(true, "", queriedPosts);
     }
 

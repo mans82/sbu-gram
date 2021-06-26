@@ -10,6 +10,7 @@ import com.mans.sbugram.server.dao.impl.UploadedFileDao;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
 
+import java.time.Instant;
 import java.util.Optional;
 
 public class FileDownloadEventHandler implements EventHandler {
@@ -34,6 +35,11 @@ public class FileDownloadEventHandler implements EventHandler {
             return new FileDownloadResponse(false, "Server error", "");
         }
 
+        System.out.printf(
+                "File Download\nFilename: %s\nTime: %s\n\n",
+                fileDownloadRequest.filename,
+                this.formatDate(Instant.now())
+        );
         return uploadedFile.map(
                 file -> new FileDownloadResponse(true, "", file.blob)
         ).orElseGet(

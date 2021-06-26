@@ -10,6 +10,7 @@ import com.mans.sbugram.server.dao.impl.UploadedFileDao;
 import com.mans.sbugram.server.exceptions.PersistentOperationException;
 import com.mans.sbugram.server.exceptions.RequestTypeMismatchException;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.Random;
 
@@ -45,6 +46,11 @@ public class FileUploadEventHandler implements EventHandler {
             return new FileUploadResponse(false, "Server error", "");
         }
 
+        System.out.printf(
+                "File upload\nFilename: %s\nTime: %s\n\n",
+                uploadedFile.name,
+                this.formatDate(Instant.now())
+        );
         return new FileUploadResponse(true, "", uploadedFile.name);
     }
 

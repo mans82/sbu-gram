@@ -10,6 +10,7 @@ import com.mans.sbugram.models.requests.RequestType;
 import com.mans.sbugram.models.responses.LoginResponse;
 import com.mans.sbugram.models.responses.Response;
 
+import java.time.Instant;
 import java.util.Optional;
 
 public class LoginEventHandler implements EventHandler {
@@ -36,6 +37,11 @@ public class LoginEventHandler implements EventHandler {
         }
 
         if (queriedUser.isPresent() && queriedUser.get().password.equals(loginRequest.password)) {
+            System.out.printf(
+                    "%s logged in\nTime: %s\n\n",
+                    queriedUser.get().username,
+                    this.formatDate(Instant.now())
+                    );
             return new LoginResponse(true, null);
         } else {
             return new LoginResponse(false, "Incorrect username or password");
