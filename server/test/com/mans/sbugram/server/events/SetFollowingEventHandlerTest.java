@@ -60,6 +60,7 @@ public class SetFollowingEventHandlerTest {
         SetFollowingResponse response = (SetFollowingResponse) handler.handleEvent(request);
 
         assertTrue(response.successful);
+        assertTrue(response.following);
         assertEquals(testUserJafar.username, userArgumentCaptor.getValue().username);
         assertEquals(1, userArgumentCaptor.getValue().followingUsersUsernames.size());
     }
@@ -86,6 +87,7 @@ public class SetFollowingEventHandlerTest {
         SetFollowingResponse response = (SetFollowingResponse) handler.handleEvent(request);
 
         assertTrue(response.successful);
+        assertFalse(response.following);
         assertTrue(userArgumentCaptor.getValue().followingUsersUsernames.isEmpty());
     }
 

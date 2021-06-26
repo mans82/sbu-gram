@@ -84,7 +84,7 @@ public class SetFollowingEventHandler implements EventHandler{
             return new SetFollowingResponse(false, "User info not found", false);
         }
 
-        return new SetFollowingResponse(true, "", newFollowingUsersUsernames.contains(queriedUser.username));
+        return new SetFollowingResponse(true, "", newFollowingUsersUsernames.contains(queriedFollowedUser.username));
     }
 
     @Override
