@@ -6,8 +6,10 @@ import com.mans.sbugram.client.utils.Utils;
 import com.mans.sbugram.models.Post;
 import com.mans.sbugram.models.requests.RepostRequest;
 import com.mans.sbugram.models.requests.SetLikeRequest;
+import com.mans.sbugram.models.requests.UserInfoRequest;
 import com.mans.sbugram.models.responses.RepostResponse;
 import com.mans.sbugram.models.responses.SetLikeResponse;
+import com.mans.sbugram.models.responses.UserInfoResponse;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -20,6 +22,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class TimelineListCell extends ListCell<Post> {
@@ -54,12 +59,14 @@ public class TimelineListCell extends ListCell<Post> {
         Label contentLabel;
         ImageView postPhotoImageView;
         VBox postTextVBox;
+        Label repostedLabel;
         HBox userInfoHBox;
         ImageView profilePhotoImageView;
         HBox buttonsHBox;
         Button commentsButton;
         Button likeButton;
         Button repostButton;
+        Label dateTimeLabel;
 
         try {
             postTextVBox = (VBox) root.lookup("#postTextVbox");
@@ -74,13 +81,14 @@ public class TimelineListCell extends ListCell<Post> {
             commentsButton = (Button) buttonsHBox.lookup("#commentsButton");
             likeButton = (Button) buttonsHBox.lookup("#likeButton");
             repostButton = (Button) buttonsHBox.lookup("#repostButton");
+            repostedLabel = (Label) postTextVBox.lookup("#repostedLabel");
+            dateTimeLabel = (Label) postTextVBox.lookup("#dateTimeLabel");
         } catch (NullPointerException e) {
             return;
         }
 
         titleLabel.setText(newPost.title);
         contentLabel.setText(newPost.content);
-        usernameLabel.setText("@" + newPost.posterUsername);
         commentsButton.setText("Comments " + newPost.comments.size());
 
         boolean liked = newPost.likedUsersUsernames.contains(currentUsername);
@@ -88,6 +96,71 @@ public class TimelineListCell extends ListCell<Post> {
             likeButton.setText("Liked " + newPost.likedUsersUsernames.size());
         } else {
             likeButton.setText("Like " + newPost.likedUsersUsernames.size());
+        }
+
+        if (newPost.isRepost) {
+            repostedLabel.setText(newPost.posterUsername + " reposted");
+
+            Socket serverSocketConnection;
+
+            try {
+                serverSocketConnection = new Socket("localhost", 8228);
+            } catch (IOException e) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("Cannot load original poster info");
+                errorAlert.setContentText("Server connection failed");
+                errorAlert.showAndWait();
+                return;
+            }
+
+            RequestSendTask originalUserInfoRequestTask = new RequestSendTask(
+                    new UserInfoRequest(newPost.originalPosterUsername),
+                    serverSocketConnection
+            );
+
+            originalUserInfoRequestTask.setOnSucceeded(workerStateEvent -> {
+                UserInfoResponse response = (UserInfoResponse) originalUserInfoRequestTask.getValue();
+
+                if (response.successful) {
+                    try {
+                        Utils.loadImageFromUploadedFile(profilePhotoImageView, response.user.profilePhotoFilename);
+                    } catch (IOException e) {
+                        profilePhotoImageView.setImage(new Image("/icons/error_small.png"));
+                    }
+
+                    nameLabel.setText(response.user.name);
+                    usernameLabel.setText("@" + response.user.username);
+                } else {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setHeaderText("Cannot load original poster info");
+                    errorAlert.setContentText(response.message);
+                    errorAlert.showAndWait();
+                }
+            });
+
+            Thread userInfoRequestThread = new Thread(originalUserInfoRequestTask);
+            userInfoRequestThread.setDaemon(true);
+            userInfoRequestThread.start();
+        } else {
+            postTextVBox.getChildren().remove(repostedLabel);
+            try {
+                Utils.loadUser(newPost.posterUsername, user -> {
+                    if (!user.profilePhotoFilename.isEmpty()) {
+                        try {
+                            Utils.loadImageFromUploadedFile(profilePhotoImageView, user.profilePhotoFilename);
+                        } catch (IOException e) {
+                            profilePhotoImageView.setImage(new Image("/icons/error_small.png"));
+                        }
+                    } else {
+                        profilePhotoImageView.setImage(new Image("/icons/account.png"));
+                    }
+
+                    nameLabel.setText(user.name);
+                    usernameLabel.setText("@" + user.username);
+                });
+            } catch (IOException e) {
+                profilePhotoImageView.setImage(new Image("/icons/error_small.png"));
+            }
         }
 
         commentsButton.setOnAction(actionEvent -> {
@@ -196,23 +269,11 @@ public class TimelineListCell extends ListCell<Post> {
             repostRequestThread.start();
         });
 
-        try {
-            Utils.loadUser(newPost.posterUsername, user -> {
-                if (!user.profilePhotoFilename.isEmpty()) {
-                    try {
-                        Utils.loadImageFromUploadedFile(profilePhotoImageView, user.profilePhotoFilename);
-                    } catch (IOException e) {
-                        profilePhotoImageView.setImage(new Image("/icons/error_small.png"));
-                    }
-                } else {
-                    profilePhotoImageView.setImage(new Image("/icons/account.png"));
-                }
-
-                nameLabel.setText(user.name);
-            });
-        } catch (IOException e) {
-            profilePhotoImageView.setImage(new Image("/icons/error_small.png"));
-        }
+        dateTimeLabel.setText(
+                DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
+                .withZone(ZoneId.systemDefault())
+                .format(Instant.ofEpochSecond(newPost.postedTime))
+        );
 
         if (newPost.photoFilename.isEmpty()) {
             root.getChildren().remove(postPhotoImageView);
