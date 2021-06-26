@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
@@ -23,11 +24,16 @@
             </ImageView>
             <VBox fx:id="userTextInfoVBox" alignment="CENTER_LEFT" spacing="5.0">
                <children>
-                  <Label fx:id="nameLabel" text="Name">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
+                  <HBox fx:id="nameHBox" alignment="CENTER_LEFT" spacing="5.0">
+                     <children>
+                        <Label fx:id="nameLabel" text="Name">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="followButton" mnemonicParsing="false" onAction="#onFollowButtonAction" text="Follow" />
+                     </children>
+                  </HBox>
                   <Label fx:id="usernameLabel" opacity="0.7" text="\@username" />
                   <Label fx:id="cityLabel" text="City">
                      <graphic>

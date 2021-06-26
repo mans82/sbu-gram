@@ -5,9 +5,11 @@ import com.mans.sbugram.client.tasks.RequestSendTask;
 import com.mans.sbugram.models.Post;
 import com.mans.sbugram.models.User;
 import com.mans.sbugram.models.requests.FileDownloadRequest;
+import com.mans.sbugram.models.requests.SetFollowingRequest;
 import com.mans.sbugram.models.requests.UserInfoRequest;
 import com.mans.sbugram.models.requests.UserPostsRequest;
 import com.mans.sbugram.models.responses.FileDownloadResponse;
+import com.mans.sbugram.models.responses.SetFollowingResponse;
 import com.mans.sbugram.models.responses.UserInfoResponse;
 import com.mans.sbugram.models.responses.UserPostsResponse;
 import javafx.beans.property.Property;
@@ -17,6 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -36,7 +39,9 @@ public class ProfilePage implements Initializable {
     public HBox profileHeaderHBox;
     public ImageView profilePhotoImageView;
     public VBox userTextInfoVBox;
+    public HBox nameHBox;
     public Label nameLabel;
+    public Button followButton;
     public Label usernameLabel;
     public ImageView cityIconImageView;
     public Label cityLabel;
@@ -71,20 +76,47 @@ public class ProfilePage implements Initializable {
             return;
         }
 
-        RequestSendTask requestSendTask = new RequestSendTask(
+        RequestSendTask requestOwnerUserInfoSendTask = new RequestSendTask(
                 new UserInfoRequest(this.profileOwnerUsername.getValue()),
                 serverConnectionSocket
         );
 
-        requestSendTask.setOnSucceeded(workerStateEvent -> {
-            UserInfoResponse response = (UserInfoResponse) requestSendTask.getValue();
+        requestOwnerUserInfoSendTask.setOnSucceeded(workerStateEvent -> {
+            UserInfoResponse response = (UserInfoResponse) requestOwnerUserInfoSendTask.getValue();
 
             this.onUserLoaded(response.successful ? response.user : null);
         });
 
-        Thread requestSendThread = new Thread(requestSendTask);
+        Thread requestSendThread = new Thread(requestOwnerUserInfoSendTask);
         requestSendThread.setDaemon(true);
         requestSendThread.start();
+
+
+
+        try {
+            serverConnectionSocket = new Socket("localhost", 8228);
+        } catch (IOException e) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Cannot load user information");
+            errorAlert.setContentText("Server connection failed");
+            errorAlert.showAndWait();
+            return;
+        }
+
+        RequestSendTask requestLoggedInUserInfoSendTask = new RequestSendTask(
+                new UserInfoRequest(this.username.getValue()),
+                serverConnectionSocket
+        );
+
+        requestLoggedInUserInfoSendTask.setOnSucceeded(workerStateEvent -> {
+            UserInfoResponse response = (UserInfoResponse) requestLoggedInUserInfoSendTask.getValue();
+
+            this.onLoggedInUserLoaded(response.successful ? response.user : null);
+        });
+
+        Thread loggedInUserRequestSendThread = new Thread(requestLoggedInUserInfoSendTask);
+        loggedInUserRequestSendThread.setDaemon(true);
+        loggedInUserRequestSendThread.start();
     }
 
     private void onUserLoaded(User user) {
@@ -94,6 +126,7 @@ public class ProfilePage implements Initializable {
             userTextInfoVBox.getChildren().remove(cityLabel);
             userTextInfoVBox.getChildren().remove(bioLabel);
             rootVBox.getChildren().remove(postsListView);
+            nameHBox.getChildren().remove(followButton);
             return;
         }
 
@@ -101,6 +134,10 @@ public class ProfilePage implements Initializable {
 
         nameLabel.setText(user.name);
         usernameLabel.setText("@" + user.username);
+
+        if (this.profileOwnerUsername.getValue().equals(this.username.getValue())) {
+            nameHBox.getChildren().remove(followButton);
+        }
 
         if (!user.city.isEmpty()) {
             cityLabel.setText(user.city);
@@ -186,5 +223,62 @@ public class ProfilePage implements Initializable {
         this.username.setValue(username);
         this.password.setValue(password);
         this.profileOwnerUsername.setValue(profileOwnerUsername);
+    }
+
+    private void onLoggedInUserLoaded(User loggedInUser) {
+        if (loggedInUser == null) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Cannot load logged in user info");
+            errorAlert.showAndWait();
+            return;
+        }
+
+        boolean isFollowing = loggedInUser.followingUsersUsernames.contains(this.profileOwnerUsername.getValue());
+        if (isFollowing) {
+            followButton.setText("Unfollow");
+        } else {
+            followButton.setText("Follow");
+        }
+
+        followButton.setUserData(isFollowing);
+    }
+
+
+    public void onFollowButtonAction() {
+        boolean following = (Boolean) followButton.getUserData();
+
+        Socket serverConnectionSocket;
+
+        try {
+            serverConnectionSocket = new Socket("localhost", 8228);
+        } catch (IOException e) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Cannot load logged in user info");
+            errorAlert.showAndWait();
+            return;
+        }
+
+        RequestSendTask followRequestTask = new RequestSendTask(
+                new SetFollowingRequest(this.username.getValue(), this.password.getValue(), this.profileOwnerUsername.getValue(), !following),
+                serverConnectionSocket
+        );
+
+        followRequestTask.setOnSucceeded(workerStateEvent -> {
+            SetFollowingResponse response = (SetFollowingResponse) followRequestTask.getValue();
+
+            if (response.successful) {
+                followButton.setText(response.following ? "Unfollow" : "Follow");
+                followButton.setUserData(response.following);
+            } else {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("Cannot change following state");
+                errorAlert.setContentText(response.message);
+                errorAlert.showAndWait();
+            }
+        });
+
+        Thread followRequestSendThread = new Thread(followRequestTask);
+        followRequestSendThread.setDaemon(true);
+        followRequestSendThread.start();
     }
 }
