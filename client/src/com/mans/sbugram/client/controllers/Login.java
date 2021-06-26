@@ -81,6 +81,8 @@ public class Login {
 
                 timelineStage.setScene(new Scene(timelineRoot));
                 timelineStage.setTitle(username + " - SBUGram");
+                timelineStage.initModality(Modality.APPLICATION_MODAL);
+                timelineStage.setResizable(false);
 
                 timelineStage.show();
             } else {

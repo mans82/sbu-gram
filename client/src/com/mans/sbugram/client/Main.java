@@ -14,7 +14,8 @@ public class Main extends Application {
         Pane rootPane = fxmlLoader.load();
 
         stage.setScene(new Scene(rootPane));
-        stage.setTitle("SBUgram");
+        stage.setTitle("SBUGram");
+        stage.setResizable(false);
         stage.show();
     }
 
