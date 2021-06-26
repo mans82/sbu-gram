@@ -145,8 +145,8 @@ public class PostDaoTest {
         List<Post> filteredPost = dao.getPosts(post -> post.postedTime < 300, 1000);
 
         assertEquals(2, filteredPost.size());
-        assertEquals("title1", filteredPost.get(0).title);
-        assertEquals("title2", filteredPost.get(1).title);
+        assertEquals("title2", filteredPost.get(0).title);
+        assertEquals("title1", filteredPost.get(1).title);
 
         List<Post> filteredPostEmpty = dao.getPosts(post -> post.title.equals("non existent title"), 1000);
         assertTrue(filteredPostEmpty.isEmpty());

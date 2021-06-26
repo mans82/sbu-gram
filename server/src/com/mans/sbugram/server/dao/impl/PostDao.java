@@ -150,7 +150,7 @@ public class PostDao implements Dao<Post, Integer> {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .filter(predicate)
-                .sorted((post1, post2) -> (int)(post1.postedTime - post2.postedTime))
+                .sorted((post1, post2) -> (int)(post2.postedTime - post1.postedTime))
                 .limit(limit)
                 .collect(Collectors.toList());
     }
