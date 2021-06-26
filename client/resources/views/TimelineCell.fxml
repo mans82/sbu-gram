@@ -39,6 +39,7 @@
             <HBox fx:id="buttonsHBox" alignment="CENTER_LEFT" prefWidth="280.0" spacing="5.0">
                <children>
                   <Button fx:id="commentsButton" mnemonicParsing="false" text="Comments" />
+                  <Button fx:id="likeButton" mnemonicParsing="false" text="Like" />
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

@@ -1,14 +1,14 @@
 package com.mans.sbugram.client.controllers.listcells;
 
 import com.mans.sbugram.client.controllers.Comments;
+import com.mans.sbugram.client.tasks.RequestSendTask;
 import com.mans.sbugram.client.utils.Utils;
 import com.mans.sbugram.models.Post;
+import com.mans.sbugram.models.requests.SetLikeRequest;
+import com.mans.sbugram.models.responses.SetLikeResponse;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.Socket;
 
 public class TimelineListCell extends ListCell<Post> {
 
@@ -54,6 +55,7 @@ public class TimelineListCell extends ListCell<Post> {
         ImageView profilePhotoImageView;
         HBox buttonsHBox;
         Button commentsButton;
+        Button likeButton;
 
         try {
             postTextVBox = (VBox) root.lookup("#postTextVbox");
@@ -66,6 +68,7 @@ public class TimelineListCell extends ListCell<Post> {
             profilePhotoImageView = (ImageView) userInfoHBox.lookup("#profilePhotoImageView");
             buttonsHBox = (HBox) postTextVBox.lookup("#buttonsHBox");
             commentsButton = (Button) buttonsHBox.lookup("#commentsButton");
+            likeButton = (Button) buttonsHBox.lookup("#likeButton");
         } catch (NullPointerException e) {
             return;
         }
@@ -74,6 +77,13 @@ public class TimelineListCell extends ListCell<Post> {
         contentLabel.setText(newPost.content);
         usernameLabel.setText("@" + newPost.posterUsername);
         commentsButton.setText("Comments " + newPost.comments.size());
+
+        boolean liked = newPost.likedUsersUsernames.contains(currentUsername);
+        if (liked) {
+            likeButton.setText("Liked " + newPost.likedUsersUsernames.size());
+        } else {
+            likeButton.setText("Like " + newPost.likedUsersUsernames.size());
+        }
 
         commentsButton.setOnAction(actionEvent -> {
             Stage commentsStage = new Stage();
@@ -95,6 +105,45 @@ public class TimelineListCell extends ListCell<Post> {
             commentsButton.setDisable(true);
             commentsStage.showAndWait();
             commentsButton.setDisable(false);
+        });
+
+        likeButton.setOnAction(actionEvent -> {
+            Socket serverConnectionSocket;
+            try {
+                serverConnectionSocket = new Socket("localhost", 8228);
+            } catch (IOException e) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("Cannot like post");
+                errorAlert.setContentText("Server connection failed");
+                errorAlert.showAndWait();
+                return;
+            }
+
+            RequestSendTask likeRequestSendTask = new RequestSendTask(
+                    new SetLikeRequest(currentUsername, currentPassword, newPost.id, !liked),
+                    serverConnectionSocket
+            );
+
+            likeRequestSendTask.setOnSucceeded(workerStateEvent -> {
+                SetLikeResponse response = (SetLikeResponse) likeRequestSendTask.getValue();
+
+                if (response.successful) {
+                    if (response.liked) {
+                        likeButton.setText("Liked " + (newPost.likedUsersUsernames.size() + 1));
+                    } else {
+                        likeButton.setText("Like " + (newPost.likedUsersUsernames.size() - 1));
+                    }
+                } else {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setHeaderText("Cannot like post");
+                    errorAlert.setContentText(response.message);
+                    errorAlert.showAndWait();
+                }
+            });
+
+            Thread likeRequestThread = new Thread(likeRequestSendTask);
+            likeRequestThread.setDaemon(true);
+            likeRequestThread.start();
         });
 
         try {
