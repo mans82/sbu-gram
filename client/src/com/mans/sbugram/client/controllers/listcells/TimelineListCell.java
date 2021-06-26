@@ -4,7 +4,9 @@ import com.mans.sbugram.client.controllers.Comments;
 import com.mans.sbugram.client.tasks.RequestSendTask;
 import com.mans.sbugram.client.utils.Utils;
 import com.mans.sbugram.models.Post;
+import com.mans.sbugram.models.requests.RepostRequest;
 import com.mans.sbugram.models.requests.SetLikeRequest;
+import com.mans.sbugram.models.responses.RepostResponse;
 import com.mans.sbugram.models.responses.SetLikeResponse;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Optional;
 
 public class TimelineListCell extends ListCell<Post> {
 
@@ -56,6 +59,7 @@ public class TimelineListCell extends ListCell<Post> {
         HBox buttonsHBox;
         Button commentsButton;
         Button likeButton;
+        Button repostButton;
 
         try {
             postTextVBox = (VBox) root.lookup("#postTextVbox");
@@ -69,6 +73,7 @@ public class TimelineListCell extends ListCell<Post> {
             buttonsHBox = (HBox) postTextVBox.lookup("#buttonsHBox");
             commentsButton = (Button) buttonsHBox.lookup("#commentsButton");
             likeButton = (Button) buttonsHBox.lookup("#likeButton");
+            repostButton = (Button) buttonsHBox.lookup("#repostButton");
         } catch (NullPointerException e) {
             return;
         }
@@ -144,6 +149,51 @@ public class TimelineListCell extends ListCell<Post> {
             Thread likeRequestThread = new Thread(likeRequestSendTask);
             likeRequestThread.setDaemon(true);
             likeRequestThread.start();
+        });
+
+        repostButton.setOnAction(actionEvent -> {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setHeaderText("Do you want to repost this post?");
+            Optional<ButtonType> result =  confirmationAlert.showAndWait();
+            if (!result.isPresent() || result.get() != ButtonType.OK) {
+                return;
+            }
+
+            Socket serverConnectionSocket;
+
+            try {
+                serverConnectionSocket = new Socket("localhost", 8228);
+            } catch (IOException e) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("Cannot repost");
+                errorAlert.setContentText("Server connection failed");
+                errorAlert.showAndWait();
+                return;
+            }
+
+            RequestSendTask repostRequestTask = new RequestSendTask(
+                    new RepostRequest(currentUsername, currentPassword, newPost.id),
+                    serverConnectionSocket
+            );
+
+            repostRequestTask.setOnSucceeded(workerStateEvent -> {
+                RepostResponse response = (RepostResponse) repostRequestTask.getValue();
+
+                if (response.successful) {
+                    Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
+                    infoAlert.setHeaderText("Reposted successfully");
+                    infoAlert.showAndWait();
+                } else {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setHeaderText("Cannot repost");
+                    errorAlert.setContentText(response.message);
+                    errorAlert.showAndWait();
+                }
+            });
+
+            Thread repostRequestThread = new Thread(repostRequestTask);
+            repostRequestThread.setDaemon(true);
+            repostRequestThread.start();
         });
 
         try {
