@@ -7,4 +7,4 @@ name on top of that - much like "Retweets" in Twitter). Users can also follow ot
 very own "timeline".
 
 ### Video demo
-_To be added later..._
+You can watch the demo [here](https://www.aparat.com/v/8vRMm).
